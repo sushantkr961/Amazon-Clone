@@ -25,7 +25,7 @@ function HeaderComponent() {
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="me-auto">
             <InputGroup>
-              <DropdownButton id="dropdown-basic-button" title="All">
+              <DropdownButton id="dropdown-basic-button" title="All Categories">
                 <Dropdown.Item>Electronics</Dropdown.Item>
                 <Dropdown.Item>Books</Dropdown.Item>
                 <Dropdown.Item>Beauty</Dropdown.Item>

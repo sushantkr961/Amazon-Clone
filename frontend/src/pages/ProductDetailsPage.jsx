@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Alert,
   Button,
@@ -11,29 +11,57 @@ import {
 } from "react-bootstrap";
 import { Rating } from "react-simple-star-rating";
 import AddedToCartMessageComponent from "../components/AddedToCartMessageComponent";
+import ImageZoom from "js-image-zoom"
 
 const ProductDetailsPage = () => {
+  let options = {
+    width: 400,
+    zoomWidth: 500,
+    fillContainer: true,
+    zoomPosition: "right",
+    scale: 2,
+    offset: { vertical: 0, horizontal: 0 },
+  }
+  useEffect(() => {
+    new ImageZoom(document.getElementById("first"),options)
+    new ImageZoom(document.getElementById("second"),options)
+    new ImageZoom(document.getElementById("third"),options)
+    new ImageZoom(document.getElementById("fourth"),options)
+  })
+
   return (
     <Container>
       <AddedToCartMessageComponent />
       <Row className="mt-5">
-        <Col md={4}>
-          <Image
-            fluid
-            src="https://m.media-amazon.com/images/G/31/img21/CEPC/Electronics/Revamp/SBC/xcm_banners_13_sbc_v1_564x564_in-en._CB657839269_.jpg"
-          />
-          <Image
-            fluid
-            src="https://m.media-amazon.com/images/G/31/img21/CEPC/Electronics/Revamp/xcm_banners_01_feb22_564x564_in-en._CB628916123_.jpg"
-          />
-          <Image
-            fluid
-            src="https://m.media-amazon.com/images/G/31/img21/CEPC/Electronics/Revamp/SBC/xcm_banners_06_sbc_v1_564x564_in-en._CB657839316_.jpg"
-          />
-          <Image
-            fluid
-            src="https://m.media-amazon.com/images/G/31/img21/CEPC/Electronics/Revamp/xcm_banners_01_feb1_564x564_in-en._CB628696172_.jpg"
-          />
+        <Col style={{zIndex:1}} md={4}>
+          <div id="first">
+            <Image crossOrigin="anonymous"
+              fluid
+              src="https://m.media-amazon.com/images/G/31/img21/CEPC/Electronics/Revamp/SBC/xcm_banners_13_sbc_v1_564x564_in-en._CB657839269_.jpg"
+            />
+          </div>
+          <br />
+          <div id="second">
+            <Image
+              fluid
+              src="https://m.media-amazon.com/images/G/31/img21/CEPC/Electronics/Revamp/xcm_banners_01_feb1_564x564_in-en._CB628696172_.jpg"
+            />
+          </div>
+          <br />
+          <div id="third">
+            <Image
+              fluid
+              src="https://m.media-amazon.com/images/G/31/img21/CEPC/Electronics/Revamp/xcm_banners_01_feb22_564x564_in-en._CB628916123_.jpg"
+            />
+          </div>
+          <br />
+          <div id="fourth">
+            <Image
+              fluid
+              src="https://m.media-amazon.com/images/G/31/img21/CEPC/Electronics/Revamp/SBC/xcm_banners_06_sbc_v1_564x564_in-en._CB657839316_.jpg"
+            />
+          </div>
+          <br />
         </Col>
         <Col md={8}>
           <Row>
@@ -111,7 +139,9 @@ const ProductDetailsPage = () => {
               <option value="2">(bad)</option>
               <option value="1">(awful)</option>
             </Form.Select>
-            <Button className="mb-3 mt-3" variant="primary">Submit</Button>
+            <Button className="mb-3 mt-3" variant="primary">
+              Submit
+            </Button>
           </Form>
         </Col>
       </Row>
