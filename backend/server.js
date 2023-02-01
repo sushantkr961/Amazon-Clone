@@ -8,7 +8,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.get("/", async (req, res) => {
-  // console.log("synchronous code");
   res.json({ message: "API running..." });
 });
 
@@ -16,6 +15,18 @@ app.get("/", async (req, res) => {
 require("./config/db");
 
 app.use("/api", apiRoutes);
+
+// custom error handler
+app.use((error, req, res, next) => {
+  console.error(error);
+  next(error);
+});
+app.use((error, req, res, next) => {
+  res.status(500).json({
+    message: error.message,
+    stack: error.stack,
+  });
+});
 
 app.listen(PORT, () => {
   console.log(`Listening on http://localhost:${PORT}`);
