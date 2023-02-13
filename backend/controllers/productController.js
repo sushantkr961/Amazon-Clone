@@ -1,5 +1,8 @@
 const recordsPerPage = require("../config/pagination");
 const Product = require("../models/productModel");
+const path = require("path");
+const fs = require("fs");
+const { v4: uuidv4 } = require("uuid");
 const imageValidate = require("../utilities/imageValidate");
 
 const getProducts = async (req, res, next) => {
@@ -239,11 +242,69 @@ const adminUpload = async (req, res, next) => {
       return res.status(400).send(validateResult.error);
     }
 
+    const uploadDirectory = path.resolve(
+      __dirname,
+      "../../frontend",
+      "public",
+      "images",
+      "products"
+    );
+
+    // console.log(req.query.productId);
+    let product = await Product.findById(req.query.productId).orFail();
+
+    let imagesTable = [];
+
     if (Array.isArray(req.files.images)) {
-      res.send("You sent " + req.files.images.length + " images");
+      // res.send("You sent " + req.files.images.length + " images");
+      imagesTable = req.files.images;
     } else {
-      res.send("You send only one image");
+      // res.send("You send only one image");
+      imagesTable.push(req.files.images);
     }
+
+    for (let image of imagesTable) {
+      // console.log(image);
+      // console.log(path.extname(image.name));
+      // console.log(uuidv4());
+      // var uploadPath = uploadDirectory + "/" + uuidv4() + path.extname(image.name);
+
+      var filename = uuidv4() + path.extname(image.name);
+      var uploadPath = uploadDirectory + "/" + filename;
+      product.images.push({ path: "/images/products/" + filename });
+
+      image.mv(uploadPath, function (err) {
+        if (err) {
+          return res.status(500).send(err);
+        }
+      });
+    }
+
+    await product.save();
+
+    return res.send("Files uploaded successfully");
+  } catch (error) {
+    next(error);
+  }
+};
+
+// delete an image
+const adminDeleteProductImage = async (req, res, next) => {
+  try {
+    const imagePath = decodeURIComponent(req.params.imagePath);
+    const finalPath = path.resolve("../frontend/public") + imagePath;
+    // console.log(finalPath);
+    fs.unlink(finalPath, (err) => {
+      if (err) {
+        res.status(500).send(err);
+      }
+    });
+    await Product.findOneAndUpdate(
+      { _id: req.params.productId },
+      { $pull: { images: { path: imagePath } } }
+    ).orFail();
+
+    return res.end();
   } catch (error) {
     next(error);
   }
@@ -258,4 +319,5 @@ module.exports = {
   adminCreateProduct,
   adminUpdateProduct,
   adminUpload,
+  adminDeleteProductImage,
 };
