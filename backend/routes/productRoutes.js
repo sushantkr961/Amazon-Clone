@@ -24,6 +24,7 @@ router.get("/get-one/:id", getProductById);
 router.get("/bestsellers", getBestsellers); // bestsellers product from category
 
 // admin routes:
+// routes below this line needs to login and isAdmin
 router.use(verifyIsLoggedIn);
 router.use(verifyisAdmin);
 router.get("/admin", adminGetProducts);

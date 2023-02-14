@@ -13,6 +13,7 @@ const router = express.Router();
 
 router.get("/", getCategories);
 
+// routes below this line need to be logged in and isAdmin
 router.use(verifyIsLoggedIn);
 router.use(verifyisAdmin);
 router.post("/", postCategory);
