@@ -13,7 +13,7 @@ const orders = Array.from({ length: 22 }).map((_, idx) => {
     var subtotal = 100;
   }
   return {
-    user: new ObjectId(),
+    user: new ObjectId("63ee7c0cd21cc158998cd9e7"),
     orderTotal: {
       itemsCount: 3,
       cartSubtotal: subtotal,
@@ -23,8 +23,8 @@ const orders = Array.from({ length: 22 }).map((_, idx) => {
         name: "Product name",
         price: 34,
         image: { path: "/images/tablets-category.png" },
-        quantity: 532,
-        count: 65,
+        quantity: 3,
+        count: 12,
       },
     ],
     paymentMethod: "PayPal",
