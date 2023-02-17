@@ -71,7 +71,7 @@ const loginUser = async (req, res, next) => {
     if (!(email && password)) {
       return res.status(400).send("All inputs are required");
     }
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).orFail();
     if (user && comparePasswords(password, user.password)) {
       let cookieParams = {
         httpOnly: true,
