@@ -5,7 +5,11 @@ import { Alert, Button, Col, Container, Form, Row } from "react-bootstrap";
 const UserProfilePageComponent = ({
   updateUserApiRequest,
   fetchUser,
-  userInfo,
+  userInfoFromRedux,
+  setReduxUserState,
+  reduxDispatch,
+  localStorage,
+  sessionStorage,
 }) => {
   const [validated, setValidated] = useState(false);
   const [updateUserResponseState, setUpdateUserResponseState] = useState({
@@ -16,10 +20,10 @@ const UserProfilePageComponent = ({
   const [user, setUser] = useState({});
 
   useEffect(() => {
-    fetchUser(userInfo._id)
+    fetchUser(userInfoFromRedux._id)
       .then((data) => setUser(data))
       .catch((err) => console.log(err));
-  }, [userInfo._id]);
+  }, [userInfoFromRedux._id]);
 
   const onChange = () => {
     const password = document.querySelector("input[name=password]");
@@ -66,6 +70,18 @@ const UserProfilePageComponent = ({
         .then((data) => {
           //   console.log(data);
           setUpdateUserResponseState({ success: data.success, error: "" });
+          reduxDispatch(
+            setReduxUserState({
+              doNotLogout: userInfoFromRedux.doNotLogout,
+              ...data.userUpdated,
+            })
+          );
+          if (userInfoFromRedux.doNotLogout) {
+            localStorage.setItem(
+              "userInfo",
+              JSON.stringify({ doNotLogout: true, ...data.userUpdated })
+            );
+          }
         })
         .catch((er) =>
           setUpdateUserResponseState({
@@ -126,6 +142,7 @@ const UserProfilePageComponent = ({
                   placeholder="Enter your phone number"
                   defaultValue={user.phoneNumber}
                   name="phoneNumber"
+                  maxLength={10}
                 />
               </Form.Group>
               <Form.Group className="mb-3" controlId="formBasicAddress">

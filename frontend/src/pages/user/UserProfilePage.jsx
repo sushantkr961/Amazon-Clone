@@ -1,5 +1,6 @@
 import axios from "axios";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setReduxUserState } from "../../redux/actions/userAction";
 import UserProfilePageComponent from "./components/UserProfilePageComponent";
 
 const updateUserApiRequest = async (
@@ -27,19 +28,25 @@ const updateUserApiRequest = async (
   return data;
 };
 
-const fetchUser = async (user_id) => {
-  const { data } = await axios.get("/api/users/profile/" + user_id);
+const fetchUser = async (id) => {
+  const { data } = await axios.get("/api/users/profile/" + id);
   return data;
 };
 
 const UserProfilePage = () => {
+  const reduxDispatch = useDispatch()
+
   const { userInfo } = useSelector((state) => state.userRegisterLogin);
 
   return (
     <UserProfilePageComponent
       updateUserApiRequest={updateUserApiRequest}
       fetchUser={fetchUser}
-      userInfo={userInfo}
+      userInfoFromRedux={userInfo}
+      setReduxUserState={setReduxUserState}
+      reduxDispatch={reduxDispatch}
+      localStorage={window.localStorage}
+      sessionStorage={window.sessionStorage}
     />
   );
 };
