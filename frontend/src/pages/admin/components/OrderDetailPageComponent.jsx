@@ -12,9 +12,13 @@ import {
 import CartItemComponent from "../../../components/CartItemComponent";
 
 import { useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logout } from "../../../redux/actions/userAction";
 
 const OrderDetailPageComponent = ({ getOrder, markAsDelivered }) => {
   const { id } = useParams();
+  const dispatch = useDispatch();
+
   const [userInfo, setUserInfo] = useState({});
   const [paymentMehtod, setPaymentMehtod] = useState("");
   const [cartSubTotal, setCartSubTotal] = useState(0);
@@ -42,15 +46,15 @@ const OrderDetailPageComponent = ({ getOrder, markAsDelivered }) => {
         }
         setCartItems(res.cartItems);
       })
-      .catch((err) =>
-        console.log(
-          err.response.data.message
-            ? err.response.data.message
-            : err.response.data
-        )
+      .catch(
+        (err) => dispatch(logout())
+        // console.log(
+        //   err.response.data.message
+        //     ? err.response.data.message
+        //     : err.response.data
+        // )
       );
   }, [isDelivered, id]);
-
 
   return (
     <Container fluid>

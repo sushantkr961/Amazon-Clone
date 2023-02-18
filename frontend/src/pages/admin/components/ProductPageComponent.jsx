@@ -1,10 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import { Button, Col, Row, Table } from "react-bootstrap";
+import { useDispatch } from "react-redux";
 import { LinkContainer } from "react-router-bootstrap";
 import AdminLinksComponents from "../../../components/admin/AdminLinksComponents";
+import { logout } from "../../../redux/actions/userAction";
 
 const ProductPageComponent = ({ fetchProducts, deleteProduct }) => {
+  const dispatch = useDispatch();
+
   const [products, setProducts] = useState([]);
   const [productDeleted, setProductDeleted] = useState(false);
 
@@ -21,14 +25,15 @@ const ProductPageComponent = ({ fetchProducts, deleteProduct }) => {
     const abctrl = new AbortController();
     fetchProducts(abctrl)
       .then((res) => setProducts(res))
-      .catch((err) =>
-        setProducts([
-          {
-            name: err.response.data.message
-              ? err.response.data.message
-              : err.response.data,
-          },
-        ])
+      .catch(
+        (err) => dispatch(logout())
+        // setProducts([
+        //   {
+        //     name: err.response.data.message
+        //       ? err.response.data.message
+        //       : err.response.data,
+        //   },
+        // ])
       );
 
     return () => abctrl.abort();

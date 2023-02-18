@@ -10,7 +10,11 @@ import {
 } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 
-const LoginPageComponent = ({ loginUserApiRequest,reduxDispatch,setReduxUserState }) => {
+const LoginPageComponent = ({
+  loginUserApiRequest,
+  reduxDispatch,
+  setReduxUserState,
+}) => {
   const [validated, setValidated] = useState(false);
   const [loginUserResponseState, setLoginUserResponseState] = useState({
     success: "",
@@ -40,17 +44,19 @@ const LoginPageComponent = ({ loginUserApiRequest,reduxDispatch,setReduxUserStat
           });
 
           // data store in redux state
-          if (res.userLoggedIn){
-            reduxDispatch(setReduxUserState(res.userLoggedIn))
+          if (res.userLoggedIn) {
+            reduxDispatch(setReduxUserState(res.userLoggedIn));
           }
 
-           
           if (
             res.success === "Login successfully" &&
             !res.userLoggedIn.isAdmin
           ) {
-            navigate("/user", { replace: true }); // replace:true means if we move to next page after successfull login then when we click we want to go back then login page is not shown if it is not given or rplace is false then it will back to login page
+            window.location.href = "/user";
+            // navigate("/user", { replace: true });
+            // replace:true means if we move to next page after successfull login then when we click we want to go back then login page is not shown if it is not given or rplace is false then it will back to login page
           } else {
+            // window.location.href="/admin/orders"
             navigate("/admin/orders", { replace: true });
           }
         })

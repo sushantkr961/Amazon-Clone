@@ -1,34 +1,38 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { Row, Col, Table, Button } from "react-bootstrap";
+import { useDispatch } from "react-redux";
 import { LinkContainer } from "react-router-bootstrap";
 import AdminLinksComponents from "../../../components/admin/AdminLinksComponents";
+import { logout } from "../../../redux/actions/userAction";
 
 const UsersPageComponent = ({ fetchUsers, deleteUser }) => {
+  const dispatch = useDispatch();
+
   const [users, setUsers] = useState([]);
   const [userDeleted, setUserDeleted] = useState(false);
 
   const deleteHandler = async (userId) => {
-    if (window.confirm("Are you sure?")){
-      const data = await deleteUser(userId)
-      if (data === "user removed successfully"){
-        setUserDeleted(true)
+    if (window.confirm("Are you sure?")) {
+      const data = await deleteUser(userId);
+      if (data === "user removed successfully") {
+        setUserDeleted(true);
       }
     }
   };
-
 
   useEffect(() => {
     const abctrl = new AbortController(); // JS inbuilt function check mdn
     // by using AbortController when users come on this page then it connected to db otherwise disconnected automatically for this page
     fetchUsers(abctrl)
       .then((res) => setUsers(res))
-      .catch((err) =>
-        console.log(
-          err.response.data.message
-            ? err.response.data.message
-            : err.response.data
-        )
+      .catch(
+        (err) => dispatch(logout())
+        // console.log(
+        //   err.response.data.message
+        //     ? err.response.data.message
+        //     : err.response.data
+        // )
       );
     return () => abctrl.abort();
   }, [userDeleted]);

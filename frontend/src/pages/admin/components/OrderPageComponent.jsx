@@ -1,24 +1,28 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import { Col, Row, Table } from "react-bootstrap";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import AdminLinksComponents from "../../../components/admin/AdminLinksComponents";
+import { logout } from "../../../redux/actions/userAction";
 
 const OrderPageComponent = ({ fetchOrder }) => {
   const [orders, setOrders] = useState([]);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const abctrl = new AbortController();
     fetchOrder(abctrl)
       .then((res) => setOrders(res))
-      .catch((err) =>
-        setOrders([
-          {
-            name: err.response.data.message
-              ? err.response.data.message
-              : err.response.data,
-          },
-        ])
+      .catch(
+        (err) => dispatch(logout())
+        // setOrders([
+        //   {
+        //     name: err.response.data.message
+        //       ? err.response.data.message
+        //       : err.response.data,
+        //   },
+        // ])
       );
 
     return () => abctrl.abort();
