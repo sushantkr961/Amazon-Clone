@@ -1,21 +1,36 @@
-import React, { useState } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useState } from "react";
 import { Alert, Button, Col, Container, Form, Row } from "react-bootstrap";
 
-const UserProfilePageComponent = ({ updateUserApiRequest }) => {
+const UserProfilePageComponent = ({
+  updateUserApiRequest,
+  fetchUser,
+  userInfo,
+}) => {
   const [validated, setValidated] = useState(false);
   const [updateUserResponseState, setUpdateUserResponseState] = useState({
     success: "",
     error: "",
   });
+  const [passsowrdMatchState, setPasswordMatchState] = useState(true);
+  const [user, setUser] = useState({});
+
+  useEffect(() => {
+    fetchUser(userInfo._id)
+      .then((data) => setUser(data))
+      .catch((err) => console.log(err));
+  }, [userInfo._id]);
 
   const onChange = () => {
     const password = document.querySelector("input[name=password]");
-    const confirm = document.querySelector("input[name=confirmPassword]");
+    const confirmPassword = document.querySelector(
+      "input[name=confirmPassword]"
+    );
 
-    if (confirm.value === password.value) {
-      confirm.setCustomValidity("");
+    if (confirmPassword.value === password.value) {
+      setPasswordMatchState(true);
     } else {
-      confirm.setCustomValidity("Passwords do not match");
+      setPasswordMatchState(false);
     }
   };
 
@@ -49,7 +64,7 @@ const UserProfilePageComponent = ({ updateUserApiRequest }) => {
         password
       )
         .then((data) => {
-        //   console.log(data);
+          //   console.log(data);
           setUpdateUserResponseState({ success: data.success, error: "" });
         })
         .catch((er) =>
@@ -76,7 +91,7 @@ const UserProfilePageComponent = ({ updateUserApiRequest }) => {
                 <Form.Control
                   required
                   type="text"
-                  defaultValue="Sushant"
+                  defaultValue={user.name}
                   name="name"
                 />
                 <Form.Control.Feedback type="invalid">
@@ -88,7 +103,7 @@ const UserProfilePageComponent = ({ updateUserApiRequest }) => {
                 <Form.Control
                   required
                   type="text"
-                  defaultValue="Kumar"
+                  defaultValue={user.lastName}
                   name="lastName"
                 />
                 <Form.Control.Feedback type="invalid">
@@ -99,14 +114,17 @@ const UserProfilePageComponent = ({ updateUserApiRequest }) => {
                 <Form.Label>Email address</Form.Label>
                 <Form.Control
                   disabled
-                  value="sushant@gamil.com  if you want to change email,remove account and create a new one"
+                  value={
+                    user.email +
+                    " if you want to change email,remove account and create a new one"
+                  }
                 />
               </Form.Group>
               <Form.Group className="mb-3" controlId="formBasicPhone">
                 <Form.Label>Phone Number</Form.Label>
                 <Form.Control
                   placeholder="Enter your phone number"
-                  defaultValue=""
+                  defaultValue={user.phoneNumber}
                   name="phoneNumber"
                 />
               </Form.Group>
@@ -114,7 +132,7 @@ const UserProfilePageComponent = ({ updateUserApiRequest }) => {
                 <Form.Label>Enter Address</Form.Label>
                 <Form.Control
                   placeholder="Enter your address"
-                  defaultValue=""
+                  defaultValue={user.address}
                   name="address"
                 />
               </Form.Group>
@@ -122,7 +140,7 @@ const UserProfilePageComponent = ({ updateUserApiRequest }) => {
                 <Form.Label>Country</Form.Label>
                 <Form.Control
                   placeholder="Enter your Country Name"
-                  defaultValue=""
+                  defaultValue={user.country}
                   name="country"
                 />
               </Form.Group>
@@ -130,7 +148,7 @@ const UserProfilePageComponent = ({ updateUserApiRequest }) => {
                 <Form.Label>PIN Code</Form.Label>
                 <Form.Control
                   placeholder="Enter your PIN Code"
-                  defaultValue=""
+                  defaultValue={user.pinCode}
                   name="pinCode"
                 />
               </Form.Group>
@@ -138,7 +156,7 @@ const UserProfilePageComponent = ({ updateUserApiRequest }) => {
                 <Form.Label>City</Form.Label>
                 <Form.Control
                   placeholder="Enter your city"
-                  defaultValue=""
+                  defaultValue={user.city}
                   name="city"
                 />
               </Form.Group>
@@ -146,7 +164,7 @@ const UserProfilePageComponent = ({ updateUserApiRequest }) => {
                 <Form.Label>State</Form.Label>
                 <Form.Control
                   placeholder="Enter your State Name"
-                  defaultValue=""
+                  defaultValue={user.state}
                   name="state"
                 />
               </Form.Group>
@@ -159,6 +177,7 @@ const UserProfilePageComponent = ({ updateUserApiRequest }) => {
                   name="password"
                   minLength={6}
                   onChange={onChange}
+                  isInvalid={!passsowrdMatchState}
                 />
                 <Form.Control.Feedback type="invalid">
                   Please enter valid password
@@ -176,6 +195,7 @@ const UserProfilePageComponent = ({ updateUserApiRequest }) => {
                   name="confirmPassword"
                   minLength={6}
                   onChange={onChange}
+                  isInvalid={!passsowrdMatchState}
                 />
                 <Form.Control.Feedback type="invalid">
                   Both password should match
@@ -185,7 +205,10 @@ const UserProfilePageComponent = ({ updateUserApiRequest }) => {
                 Update
               </Button>
               <Alert
-                show={updateUserResponseState && updateUserResponseState.error !== ""}
+                show={
+                  updateUserResponseState &&
+                  updateUserResponseState.error !== ""
+                }
                 variant="danger"
               >
                 User with that email already exists!
@@ -193,7 +216,8 @@ const UserProfilePageComponent = ({ updateUserApiRequest }) => {
               <Alert
                 show={
                   updateUserResponseState &&
-                  updateUserResponseState.success === "user updated successfully"
+                  updateUserResponseState.success ===
+                    "user updated successfully"
                 }
                 variant="info"
               >
