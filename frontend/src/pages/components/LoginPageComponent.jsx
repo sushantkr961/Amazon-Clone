@@ -10,7 +10,7 @@ import {
 } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 
-const LoginPageComponent = ({ loginUserApiRequest }) => {
+const LoginPageComponent = ({ loginUserApiRequest,reduxDispatch,setReduxUserState }) => {
   const [validated, setValidated] = useState(false);
   const [loginUserResponseState, setLoginUserResponseState] = useState({
     success: "",
@@ -32,12 +32,19 @@ const LoginPageComponent = ({ loginUserApiRequest }) => {
       setLoginUserResponseState({ loading: true });
       loginUserApiRequest(email, password, doNotLogout)
         .then((res) => {
-          console.log(res);
+          // console.log(res);
           setLoginUserResponseState({
             success: res.success,
             loading: false,
             error: "",
           });
+
+          // data store in redux state
+          if (res.userLoggedIn){
+            reduxDispatch(setReduxUserState(res.userLoggedIn))
+          }
+
+           
           if (
             res.success === "Login successfully" &&
             !res.userLoggedIn.isAdmin
