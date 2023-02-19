@@ -4,14 +4,14 @@ import {
   legacy_createStore,
   compose,
 } from "redux";
-import { counterReducer } from "./reducers/cartReducers";
 import thunk from "redux-thunk";
+import { cartReducer } from "./reducers/cartReducers";
 import { userRegisterLoginReducer } from "./reducers/userReducers";
 
 const createComposer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const reducer = combineReducers({
-  cart: counterReducer,
+  cart: cartReducer,
   userRegisterLogin: userRegisterLoginReducer,
 });
 
@@ -24,7 +24,11 @@ const userInfoInLocalStorage = localStorage.getItem("userInfo")
   : {};
 
 const INITIAL_STATE = {
-  cart: { value: 0 },
+  cart: {
+    cartItems: [],
+    itemsCount: 0,
+    cartSubtotal: 0,
+  },
   userRegisterLogin: { userInfo: userInfoInLocalStorage },
 };
 
