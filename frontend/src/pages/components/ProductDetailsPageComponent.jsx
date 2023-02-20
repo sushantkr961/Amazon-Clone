@@ -1,36 +1,35 @@
-import React, { useEffect, useState } from "react";
 import {
-  Alert,
-  Button,
+  Row,
   Col,
   Container,
-  Form,
   Image,
   ListGroup,
-  Row,
+  Form,
+  Button,
+  Alert,
 } from "react-bootstrap";
 import { Rating } from "react-simple-star-rating";
 import AddedToCartMessageComponent from "../../components/AddedToCartMessageComponent";
+
 import ImageZoom from "js-image-zoom";
+import { useEffect, useState } from "react";
+
 import { useParams } from "react-router-dom";
 
-const ProductDetailsPageComponent = ({
-  addToCartReduxAction,
-  reudxDispatch,
-}) => {
-  const [quantity, setQuantity] = useState(1);
+const ProductDetailsPageComponent = ({ addToCartReduxAction, reduxDispatch }) => {
+  const [quantity,setQuantity] = useState(1)
   const { id } = useParams();
-    // console.log(id);
+  // console.log(id);
 
   const addToCartHandler = () => {
-    reudxDispatch(addToCartReduxAction(id, quantity));
-  };
+    reduxDispatch(addToCartReduxAction(id,quantity))
+  }
 
-  let options = {
-    width: 400,
-    zoomWidth: 500,
-    fillContainer: true,
-    zoomPosition: "right",
+  var options = {
+    // width: 400,
+    // zoomWidth: 500,
+    // fillContainer: true,
+    // zoomPosition: "bottom",
     scale: 2,
     offset: { vertical: 0, horizontal: 0 },
   };
@@ -40,7 +39,6 @@ const ProductDetailsPageComponent = ({
     new ImageZoom(document.getElementById("third"), options);
     new ImageZoom(document.getElementById("fourth"), options);
   });
-
   return (
     <Container>
       <AddedToCartMessageComponent />
@@ -50,50 +48,39 @@ const ProductDetailsPageComponent = ({
             <Image
               crossOrigin="anonymous"
               fluid
-              src="https://m.media-amazon.com/images/G/31/img21/CEPC/Electronics/Revamp/SBC/xcm_banners_13_sbc_v1_564x564_in-en._CB657839269_.jpg"
+              src="/images/games-category.png"
             />
           </div>
           <br />
           <div id="second">
-            <Image
-              fluid
-              src="https://m.media-amazon.com/images/G/31/img21/CEPC/Electronics/Revamp/xcm_banners_01_feb1_564x564_in-en._CB628696172_.jpg"
-            />
+            <Image fluid src="/images/monitors-category.png" />
           </div>
           <br />
           <div id="third">
-            <Image
-              fluid
-              src="https://m.media-amazon.com/images/G/31/img21/CEPC/Electronics/Revamp/xcm_banners_01_feb22_564x564_in-en._CB628916123_.jpg"
-            />
+            <Image fluid src="/images/tablets-category.png" />
           </div>
           <br />
           <div id="fourth">
-            <Image
-              fluid
-              src="https://m.media-amazon.com/images/G/31/img21/CEPC/Electronics/Revamp/SBC/xcm_banners_06_sbc_v1_564x564_in-en._CB657839316_.jpg"
-            />
+            <Image fluid src="/images/games-category.png" />
           </div>
           <br />
         </Col>
         <Col md={8}>
           <Row>
             <Col md={8}>
-              <ListGroup varient="flush">
+              <ListGroup variant="flush">
                 <ListGroup.Item>
-                  <h1>Product Name</h1>
+                  <h1>Product name</h1>
                 </ListGroup.Item>
                 <ListGroup.Item>
                   <Rating readonly size={20} initialValue={4} /> (1)
                 </ListGroup.Item>
                 <ListGroup.Item>
-                  Price <span className="fw-bold">₹324</span>
+                  Price <span className="fw-bold">$345</span>
                 </ListGroup.Item>
                 <ListGroup.Item>
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                  Consequuntur repellendus explicabo quae provident, ipsa soluta
-                  voluptatem adipisci quos dolore possimus culpa expedita,
-                  temporibus cumque nihil quibusdam sit ipsum voluptate! Nobis?
+                  Porta ac consectetur ac Lorem ipsum dolor, sit amet
+                  consectetur adipisicing elit. Perferendis, illo.
                 </ListGroup.Item>
               </ListGroup>
             </Col>
@@ -101,15 +88,11 @@ const ProductDetailsPageComponent = ({
               <ListGroup>
                 <ListGroup.Item>Status: in stock</ListGroup.Item>
                 <ListGroup.Item>
-                  Price: <span className="fw-bold">₹324</span>
+                  Price: <span className="fw-bold">$345</span>
                 </ListGroup.Item>
                 <ListGroup.Item>
                   Quantity:
-                  <Form.Select
-                    value={quantity}
-                    onChange={(e) => setQuantity(e.target.value)}
-                    aria-label="Default select example"
-                  >
+                  <Form.Select value={quantity} onChange={e => setQuantity(e.target.value)} size="lg" aria-label="Default select example">
                     <option>Choose</option>
                     <option value="1">1</option>
                     <option value="2">2</option>
@@ -127,24 +110,22 @@ const ProductDetailsPageComponent = ({
           <Row>
             <Col className="mt-5">
               <h5>REVIEWS</h5>
-              <ListGroup varient="flush">
+              <ListGroup variant="flush">
                 {Array.from({ length: 10 }).map((item, idx) => (
                   <ListGroup.Item key={idx}>
-                    Sushant kumar <br />
-                    <Rating readonly size={20} initialValue={4} /> <br />
-                    30-01-2023 <br />
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Placeat id explicabo iste veniam, laboriosam aliquam, quod
-                    quaerat consequuntur repellat soluta quam reprehenderit
-                    ducimus tempora, fugit debitis? Illum, aspernatur.
-                    Repellendus, accusantium?
+                    John Doe <br />
+                    <Rating readonly size={20} initialValue={4} />
+                    <br />
+                    20-09-2001 <br />
+                    Porta ac consectetur ac Lorem ipsum dolor, sit amet
+                    consectetur adipisicing elit. Perferendis, illo.
                   </ListGroup.Item>
                 ))}
               </ListGroup>
             </Col>
           </Row>
           <hr />
-          <Alert variant="danger">Longin first to write a review</Alert>
+          <Alert variant="danger">Login first to write a review</Alert>
           <Form>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
               <Form.Label>Write a review</Form.Label>
@@ -152,11 +133,11 @@ const ProductDetailsPageComponent = ({
             </Form.Group>
             <Form.Select aria-label="Default select example">
               <option>Your rating</option>
-              <option value="5">(very good)</option>
-              <option value="4">(good)</option>
-              <option value="3">(average)</option>
-              <option value="2">(bad)</option>
-              <option value="1">(awful)</option>
+              <option value="5">5 (very good)</option>
+              <option value="4">4 (good)</option>
+              <option value="3">3 (average)</option>
+              <option value="2">2 (bad)</option>
+              <option value="1">1 (awful)</option>
             </Form.Select>
             <Button className="mb-3 mt-3" variant="primary">
               Submit
