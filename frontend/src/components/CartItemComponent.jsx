@@ -1,7 +1,13 @@
 import React from "react";
-import { Button, Col, Form, Image, ListGroup, Row } from "react-bootstrap";
+import { Col, Form, Image, ListGroup, Row } from "react-bootstrap";
+import RemoveFromCartComponent from "./RemoveFromCartComponent";
 
-const CartItemComponent = ({ item, orderCreated = false }) => {
+const CartItemComponent = ({
+  item,
+  orderCreated = false,
+  changeCount = false,
+  removeFromCartHandler = false,
+}) => {
   return (
     <>
       <ListGroup.Item>
@@ -18,7 +24,15 @@ const CartItemComponent = ({ item, orderCreated = false }) => {
             <b>₹ {item.price}</b>
           </Col>
           <Col md={3}>
-            <Form.Select onChange={() => {}} disabled={orderCreated} value={item.quantity}>
+            <Form.Select
+              onChange={
+                changeCount
+                  ? (e) => changeCount(item.productID, e.target.value)
+                  : undefined
+              }
+              disabled={orderCreated}
+              value={item.quantity}
+            >
               {[...Array(item.count).keys()].map((x) => (
                 <option key={x + 1} value={x + 1}>
                   {x + 1}
@@ -27,13 +41,15 @@ const CartItemComponent = ({ item, orderCreated = false }) => {
             </Form.Select>
           </Col>
           <Col md={3}>
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={() => window.confirm("Are you sure?")}
-            >
-              <i className="bi bi-trash"></i>
-            </Button>
+            <RemoveFromCartComponent
+              orderCreated={orderCreated}
+              productID={item.productID}
+              quantity={item.quantity}
+              price={item.price}
+              removeFromCartHandler={
+                removeFromCartHandler ? removeFromCartHandler : undefined
+              }
+            />
           </Col>
         </Row>
       </ListGroup.Item>

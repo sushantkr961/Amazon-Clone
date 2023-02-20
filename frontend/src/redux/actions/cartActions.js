@@ -1,10 +1,8 @@
-import { ADD_TO_CART } from "../actionTypes/actionTypes";
+import { ADD_TO_CART, REMOVE_FROM_CART } from "../actionTypes/actionTypes";
 import axios from "axios";
 
 export const addToCart =
   (productId, quantity) => async (dispatch, getState) => {
-    // console.log(productId);
-    // console.log(quantity);
     const { data } = await axios.get(`/api/products/get-one/${productId}`);
     dispatch({
       type: ADD_TO_CART,
@@ -16,6 +14,15 @@ export const addToCart =
         count: data.count,
         quantity,
       },
+    });
+    localStorage.setItem("cart", JSON.stringify(getState().cart.cartItems));
+  };
+
+export const removeFromCart =
+  (productID, quantity, price) => (dispatch, getState) => {
+    dispatch({
+      type: REMOVE_FROM_CART,
+      payload: { productID: productID, quantity: quantity, price: price },
     });
     localStorage.setItem("cart", JSON.stringify(getState().cart.cartItems));
   };

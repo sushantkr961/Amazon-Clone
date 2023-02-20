@@ -16,16 +16,19 @@ import { useEffect, useState } from "react";
 
 import { useParams } from "react-router-dom";
 
-const ProductDetailsPageComponent = ({ addToCartReduxAction, reduxDispatch }) => {
-  const [quantity,setQuantity] = useState(1)
-  const [showCartMessage,setShowCartMessage] = useState(false)
+const ProductDetailsPageComponent = ({
+  addToCartReduxAction,
+  reduxDispatch,
+}) => {
+  const [quantity, setQuantity] = useState(1);
+  const [showCartMessage, setShowCartMessage] = useState(false);
   const { id } = useParams();
   // console.log(id);
 
   const addToCartHandler = () => {
-    reduxDispatch(addToCartReduxAction(id,quantity))
-    setShowCartMessage(true)
-  }
+    reduxDispatch(addToCartReduxAction(id, quantity));
+    setShowCartMessage(true);
+  };
 
   var options = {
     // width: 400,
@@ -43,7 +46,10 @@ const ProductDetailsPageComponent = ({ addToCartReduxAction, reduxDispatch }) =>
   });
   return (
     <Container>
-      <AddedToCartMessageComponent showCartMessage={showCartMessage} setShowCartMessage={setShowCartMessage} />
+      <AddedToCartMessageComponent
+        showCartMessage={showCartMessage}
+        setShowCartMessage={setShowCartMessage}
+      />
       <Row className="mt-5">
         <Col style={{ zIndex: 1 }} md={4}>
           <div id="first">
@@ -94,7 +100,12 @@ const ProductDetailsPageComponent = ({ addToCartReduxAction, reduxDispatch }) =>
                 </ListGroup.Item>
                 <ListGroup.Item>
                   Quantity:
-                  <Form.Select value={quantity} onChange={e => setQuantity(e.target.value)} size="lg" aria-label="Default select example">
+                  <Form.Select
+                    value={quantity}
+                    onChange={(e) => setQuantity(e.target.value)}
+                    size="lg"
+                    aria-label="Default select example"
+                  >
                     <option>Choose</option>
                     <option value="1">1</option>
                     <option value="2">2</option>
