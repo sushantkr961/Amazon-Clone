@@ -46,7 +46,7 @@ function AllRoutes() {
       <Route element={<ProtectedRoute admin={false} />}>
         <Route path="/user" element={<UserProfilePage />} />
         <Route path="/user/my-orders" element={<UserOrderPage />} />
-        <Route path="/user/order-details" element={<UserOrderDetails />} />
+        <Route path="/user/order-details/:id" element={<UserOrderDetails />} />
         <Route path="/user/cart-details" element={<UserCartDetailsPage />} />
       </Route>
 
