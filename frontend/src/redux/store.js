@@ -6,13 +6,15 @@ import {
 } from "redux";
 import thunk from "redux-thunk";
 import { cartReducer } from "./reducers/cartReducers";
+import { getCategoriesReducer } from "./reducers/categoryReducers";
 import { userRegisterLoginReducer } from "./reducers/userReducers";
 
 const createComposer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-const reducer = combineReducers({
+const rootReducer = combineReducers({
   cart: cartReducer,
   userRegisterLogin: userRegisterLoginReducer,
+  getCategories: getCategoriesReducer,
 });
 
 const cartItemsInLocalStorage = localStorage.getItem("cart")
@@ -47,7 +49,7 @@ const INITIAL_STATE = {
 };
 
 const store = legacy_createStore(
-  reducer,
+  rootReducer,
   INITIAL_STATE,
   createComposer(applyMiddleware(...middleware))
 );

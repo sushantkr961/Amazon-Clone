@@ -11,6 +11,7 @@ import {
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
 const onHover = {
     cursor: "pointer",
@@ -22,6 +23,9 @@ const onHover = {
 
 const AdminEditProductPage = () => {
   const [validated, setValidated] = useState(false);
+  const {categories} = useSelector((state) => state.getCategories)
+  console.log(categories)
+
   const handleSubmit = (event) => {
     const form = event.currentTarget;
     if (form.checkValidity() === false) {

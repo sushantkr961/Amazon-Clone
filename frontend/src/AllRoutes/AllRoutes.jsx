@@ -59,7 +59,7 @@ function AllRoutes() {
           path="/admin/create-new-product"
           element={<AdminCreateProductPage />}
         />
-        <Route path="/admin/edit-product" element={<AdminEditProductPage />} />
+        <Route path="/admin/edit-product/:id" element={<AdminEditProductPage />} />
         <Route path="/admin/orders" element={<AdminOrderPage />} />
         <Route
           path="/admin/order-details/:id"

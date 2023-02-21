@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import {
   Navbar,
   Nav,
@@ -11,15 +12,19 @@ import {
   InputGroup,
 } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-
 import { LinkContainer } from "react-router-bootstrap";
 import { Link } from "react-router-dom";
+import { getCategories } from "../redux/actions/categoryActions";
 import { logout } from "../redux/actions/userAction";
 
 function HeaderComponent() {
   const dispatch = useDispatch();
   const { userInfo } = useSelector((state) => state.userRegisterLogin);
   const itemsCount = useSelector((state) => state.cart.itemsCount);
+
+  useEffect(() => {
+    dispatch(getCategories())
+  },[dispatch]) // we can also use empty array but sometime react gives error needs dependency array that's why passing dispatch in dependency array
 
   return (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
