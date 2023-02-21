@@ -1,62 +1,97 @@
-import axios from "axios";
 import { useSelector } from "react-redux";
-import UserOrderDetailsPageComponent from "./components/UserOrderDetailsPageComponent";
+import axios from "axios";
 import { loadScript } from "@paypal/paypal-js";
+import UserOrderDetailsPageComponent from "./components/UserOrderDetailsPageComponent";
 
+const getOrder = async (orderId) => {
+  const { data } = await axios.get("/api/orders/user/" + orderId);
+  return data;
+};
 
-const UserOrderDetails = () => {
+const loadPayPalScript = (cartSubtotal, cartItems,orderId,updateStateAfterOrder) => {
+  loadScript({
+    "client-id":
+      "Ace7F8jC8vr9dhPe9dY0zOgCEnngDfaJQPdXD-Dv0YXya3QjCpHInagXARvnOi5Z135liWECVgVuIUBk",
+  })
+    .then((paypal) => {
+      paypal
+        .Buttons(buttons(cartSubtotal, cartItems,orderId,updateStateAfterOrder))
+        .render("#paypal-container-element");
+    })
+    .catch((err) => {
+      console.error("failed to load the PayPal JS SDK script", err);
+    });
+};
+
+const buttons = (cartSubtotal, cartItems,orderId,updateStateAfterOrder) => {
+  return {
+    createOrder: function (data, actions) {
+      return actions.order.create({
+        purchase_units: [
+          {
+            amount: {
+              value: cartSubtotal,
+              breakdown: {
+                item_total: {
+                  currency_code: "USD",
+                  value: cartSubtotal,
+                },
+              },
+            },
+            items: cartItems.map((product) => {
+              return {
+                name: product.name,
+                unit_amount: {
+                  currency_code: "USD",
+                  value: product.price,
+                },
+                quantity: product.quantity,
+              };
+            }),
+          },
+        ],
+      });
+    },
+    onCancel: onCancelHandler,
+    onApprove: function (data, actions) {
+      return actions.order.capture().then(function (orderData) {
+        var transaction = orderData.purchase_units[0].payments.captures[0];
+        if (
+          transaction.status === "COMPLETED" &&
+          Number(transaction.amount.value) === Number(cartSubtotal)
+        ) {
+          // console.log("update order in database");
+          updateOrder(orderId).then((data) => {
+            if(data.isPaid){
+              updateStateAfterOrder(data.paidAt)
+            }
+          }).catch((er) => console.log(er))
+        }
+      });
+    },
+    onError: onErrorHandler,
+  };
+};
+
+const onCancelHandler = function () {
+  console.log("cancel");
+};
+
+const onErrorHandler = function (err) {
+  console.log("error");
+};
+
+const updateOrder = async(orderId) => {
+  const {data} = await axios.put("/api/orders/paid/"+orderId)
+  return data
+}
+
+const UserOrderDetailsPage = () => {
   const userInfo = useSelector((state) => state.userRegisterLogin.userInfo);
 
   const getUser = async () => {
     const { data } = await axios.get("/api/users/profile/" + userInfo._id);
     return data;
-  };
-
-  const getOrder = async (orderId) => {
-    const { data } = await axios.get("/api/orders/user/" + orderId);
-    return data;
-  };
-
-  const loadPayPalScript = ({cartSubtotal,cartItems}) => {
-    loadScript({
-      "client-id":
-        "Ace7F8jC8vr9dhPe9dY0zOgCEnngDfaJQPdXD-Dv0YXya3QjCpHInagXARvnOi5Z135liWECVgVuIUBk",
-    })
-      .then((paypal) => {
-        // console.log(paypal)
-        paypal
-          .Buttons(buttons(cartSubtotal,cartItems)
-          
-          )
-          .render("#paypal-container-element");
-      })
-      .catch((err) => {
-        console.error("Failed to load teh PayPal JS SDK script", err);
-      });
-  };
-
-  const buttons = (cartSubtotal,cartItems) => {
-    return {
-            createOrder: createPayPalOrderHandler,
-            onCancel: onCancelHandler,
-            onApprove: onApproveHandler,
-            onError: onErrorHandler,
-          }
-  }
-
-  const createPayPalOrderHandler = () => {
-    console.log("createPayPalOrderHandler");
-  };
-  const onCancelHandler = () => {
-    console.log("onCancelHandler");
-  };
-  
-  const onApproveHandler = () => {
-    console.log("onApproveHandler");
-  };
-  
-  const onErrorHandler = () => {
-    console.log("onErrorHandler");
   };
 
   return (
@@ -69,4 +104,4 @@ const UserOrderDetails = () => {
   );
 };
 
-export default UserOrderDetails;
+export default UserOrderDetailsPage;
