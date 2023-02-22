@@ -15,9 +15,6 @@ const uploadImagesApiRequest = async (images, productId) => {
     "/api/products/admin/upload?productId=" + productId,
     formData
   );
-
-
-
 };
 
 const uploadImagesCloudinaryApiRequest = (images) => {

@@ -14,7 +14,7 @@ import { useState } from "react";
 const CreateProductPageComponent = ({
   createProductApiRequest,
   uploadImagesApiRequest,
-  uploadImagesCloudinaryApiRequest
+  uploadImagesCloudinaryApiRequest,
 }) => {
   const [validated, setValidated] = useState(false);
   const [attributesTable, setAttributesTable] = useState([]);
@@ -43,16 +43,20 @@ const CreateProductPageComponent = ({
       createProductApiRequest(formInputs)
         .then((data) => {
           if (images) {
-            if (process.env.NODE_ENV === "production"){ // to do change to !==
-            uploadImagesApiRequest(images, data.productId)
-              .then((res) => {})
-              .catch((er) =>
-                setIsCreating(
-                  er.response.data.message
-                    ? er.response.data.message
-                    : er.response.data
-                )
-              );}else{uploadImagesCloudinaryApiRequest(images)}
+            if (process.env.NODE_ENV === "production") {
+              // to do change to !==
+              uploadImagesApiRequest(images, data.productId)
+                .then((res) => {})
+                .catch((er) =>
+                  setIsCreating(
+                    er.response.data.message
+                      ? er.response.data.message
+                      : er.response.data
+                  )
+                );
+            } else {
+              uploadImagesCloudinaryApiRequest(images);
+            }
           }
           if (data.message === "product created successfully") {
             navigate("/admin/products");
