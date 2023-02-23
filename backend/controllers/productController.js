@@ -302,8 +302,19 @@ const adminUpload = async (req, res, next) => {
 
 // delete an image
 const adminDeleteProductImage = async (req, res, next) => {
+  const imagePath = decodeURIComponent(req.params.imagePath);
+  if (req.query.cloudinary === "true") {
+    try {
+      await Product.findOneAndUpdate(
+        { _id: req.params.productId },
+        { $pull: { images: { path: imagePath } } }
+      ).orFail();
+      return res.end();
+    } catch (error) {
+      next(err);
+    }
+  }
   try {
-    const imagePath = decodeURIComponent(req.params.imagePath);
     const finalPath = path.resolve("../frontend/public") + imagePath;
     // console.log(finalPath);
     fs.unlink(finalPath, (err) => {
