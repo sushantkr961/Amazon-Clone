@@ -17,7 +17,7 @@ const uploadImagesApiRequest = async (images, productId) => {
   );
 };
 
-const uploadImagesCloudinaryApiRequest = (images) => {
+const uploadImagesCloudinaryApiRequest = (images,productId) => {
   const url = "https://api.cloudinary.com/v1_1/dg4ganfc7/image/upload";
   const formData = new FormData();
   for (let i = 0; i < images.length; i++) {
@@ -31,7 +31,10 @@ const uploadImagesCloudinaryApiRequest = (images) => {
       .then((response) => {
         return response.json();
       })
-      .then((data) => console.log(data));
+      .then((data) => {
+        // console.log(data)
+        axios.post("/api/products/admin/upload?cloudinary=true&productId=" + productId,data)
+      });
   }
 };
 
