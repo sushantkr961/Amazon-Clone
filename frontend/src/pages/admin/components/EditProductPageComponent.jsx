@@ -29,6 +29,8 @@ const EditProductPageComponent = ({
   reduxDisptach,
   imageDeleteHandler,
   uploadHandler,
+  uploadImagesApiRequest,
+  uploadImagesCloudinaryApiRequest
 }) => {
   const [validated, setValidated] = useState(false);
   const [product, setProduct] = useState({});
@@ -429,18 +431,37 @@ const EditProductPageComponent = ({
                 multiple
                 onChange={(e) => {
                   setIsUploading("file is uploading...");
-                  uploadHandler(e.target.files, id)
-                    .then((data) => {
-                      setIsUploading("file uploaded successfully");
-                      setImageUploaded(!imageUploaded);
+                  // uploadHandler(e.target.files, id)
+                  //   .then((data) => {
+                  //     setIsUploading("file uploaded successfully");
+                  //     setImageUploaded(!imageUploaded);
+                  //   })
+                  //   .catch((er) =>
+                  //     setIsUploading(
+                  //       er.response.data.message
+                  //         ? er.response.data.message
+                  //         : er.response.data
+                  //     )
+                  //   );
+                  if (process.env.NODE_ENV !== "production"){
+                    uploadImagesApiRequest(e.target.files,id).then(data => {
+                      setIsUploading("upload file completed")
+                      setImageUploaded(!imageUploaded)
                     })
-                    .catch((er) =>
+                      .catch((er) =>
                       setIsUploading(
                         er.response.data.message
                           ? er.response.data.message
                           : er.response.data
                       )
                     );
+                  } else {
+                    uploadImagesCloudinaryApiRequest(e.target.files,id)
+                    setIsUploading("uploading file completed.")
+                    setTimeout(() => {
+                      setImageUploaded(!imageUploaded)
+                    },5000)
+                  }
                 }}
               />
               {isUploading}
