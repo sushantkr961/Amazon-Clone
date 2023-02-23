@@ -12,6 +12,7 @@ import {
 } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Fragment, useEffect, useRef, useState } from "react";
+import { changeCategory, setValueForAttrFormDBselectForm } from "./utils/utlis";
 
 const onHover = {
   cursor: "pointer",
@@ -28,9 +29,8 @@ const EditProductPageComponent = ({
   saveAttributeToCatDoc,
   reduxDisptach,
   imageDeleteHandler,
-  uploadHandler,
   uploadImagesApiRequest,
-  uploadImagesCloudinaryApiRequest
+  uploadImagesCloudinaryApiRequest,
 }) => {
   const [validated, setValidated] = useState(false);
   const [product, setProduct] = useState({});
@@ -53,27 +53,6 @@ const EditProductPageComponent = ({
   const attrKey = useRef(null);
   const createNewAttrKey = useRef(null);
   const createNewAttrVal = useRef(null);
-
-  const setValueForAttrFormDBselectForm = (e) => {
-    // console.log(e.target.value)
-    if (e.target.value !== "Choose attribute") {
-      var selectedAttr = attributeFormDB.find(
-        (item) => item.key === e.target.value
-      );
-      // console.log(selectedAttr)
-      let valuesForAttrKeys = attrVal.current;
-      if (selectedAttr && selectedAttr.value.length > 0) {
-        while (valuesForAttrKeys.options.length) {
-          valuesForAttrKeys.remove(0);
-        }
-        valuesForAttrKeys.options.add(new Option("Choose attribute value"));
-        selectedAttr.value.map((item) => {
-          valuesForAttrKeys.add(new Option(item));
-          return "";
-        });
-      }
-    }
-  };
 
   useEffect(() => {
     fetchProduct(id)
@@ -135,19 +114,6 @@ const EditProductPageComponent = ({
     setCategoryChoosen(product.category);
     setAttributesTable(product.attrs);
   }, [product]);
-
-  const changeCategory = (e) => {
-    const highLevelCategory = e.target.value.split("/")[0];
-    const highLevelCategoryAllData = categories.find(
-      (cat) => cat.name === highLevelCategory
-    );
-    if (highLevelCategory && highLevelCategory.attrs) {
-      setAttributeFormDB(highLevelCategoryAllData.attrs);
-    } else {
-      setAttributeFormDB([]);
-    }
-    setCategoryChoosen(e.target.value);
-  };
 
   const attributeValueSelected = (e) => {
     if (e.target.value !== "Choose attribute value") {
@@ -282,7 +248,14 @@ const EditProductPageComponent = ({
                 required
                 name="category"
                 aria-label="Default select example"
-                onChange={changeCategory}
+                onChange={(e) =>
+                  changeCategory(
+                    e,
+                    categories,
+                    setAttributeFormDB,
+                    setCategoryChoosen
+                  )
+                }
               >
                 <option value="Choose category">Choose category</option>
                 {categories.map((item, idx) => {
@@ -310,7 +283,13 @@ const EditProductPageComponent = ({
                       name="atrrKey"
                       aria-label="Default select example"
                       ref={attrKey}
-                      onChange={setValueForAttrFormDBselectForm}
+                      onChange={(e) =>
+                        setValueForAttrFormDBselectForm(
+                          e,
+                          attrVal,
+                          attributeFormDB
+                        )
+                      }
                     >
                       <option>Choose attribute</option>
                       {attributeFormDB.map((item, idx) => (
@@ -431,36 +410,25 @@ const EditProductPageComponent = ({
                 multiple
                 onChange={(e) => {
                   setIsUploading("file is uploading...");
-                  // uploadHandler(e.target.files, id)
-                  //   .then((data) => {
-                  //     setIsUploading("file uploaded successfully");
-                  //     setImageUploaded(!imageUploaded);
-                  //   })
-                  //   .catch((er) =>
-                  //     setIsUploading(
-                  //       er.response.data.message
-                  //         ? er.response.data.message
-                  //         : er.response.data
-                  //     )
-                  //   );
-                  if (process.env.NODE_ENV !== "production"){
-                    uploadImagesApiRequest(e.target.files,id).then(data => {
-                      setIsUploading("upload file completed")
-                      setImageUploaded(!imageUploaded)
-                    })
+                  if (process.env.NODE_ENV !== "production") {
+                    uploadImagesApiRequest(e.target.files, id)
+                      .then((data) => {
+                        setIsUploading("upload file completed");
+                        setImageUploaded(!imageUploaded);
+                      })
                       .catch((er) =>
-                      setIsUploading(
-                        er.response.data.message
-                          ? er.response.data.message
-                          : er.response.data
-                      )
-                    );
+                        setIsUploading(
+                          er.response.data.message
+                            ? er.response.data.message
+                            : er.response.data
+                        )
+                      );
                   } else {
-                    uploadImagesCloudinaryApiRequest(e.target.files,id)
-                    setIsUploading("uploading file completed.")
+                    uploadImagesCloudinaryApiRequest(e.target.files, id);
+                    setIsUploading("uploading file completed.");
                     setTimeout(() => {
-                      setImageUploaded(!imageUploaded)
-                    },5000)
+                      setImageUploaded(!imageUploaded);
+                    }, 5000);
                   }
                 }}
               />

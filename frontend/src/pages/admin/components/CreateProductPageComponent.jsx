@@ -9,22 +9,31 @@ import {
   Alert,
 } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { Fragment, useRef, useState } from "react";
+import { changeCategory, setValueForAttrFormDBselectForm } from "./utils/utlis";
 
 const CreateProductPageComponent = ({
   createProductApiRequest,
   uploadImagesApiRequest,
   uploadImagesCloudinaryApiRequest,
+  reduxDispatch,
+  newCategory,
+  categories,
+  deleteCategory,
 }) => {
   const [validated, setValidated] = useState(false);
   const [attributesTable, setAttributesTable] = useState([]);
+  const [attributesFormDB, setAttributesFormDB] = useState([]);
   const [images, setImages] = useState(false);
   const [isCreating, setIsCreating] = useState("");
   const [createProductResponseState, setCreateProductResponseState] = useState({
     message: "",
     error: "",
   });
+  const [categoryChoosen, setCategoryChoosen] = useState("Choose category");
 
+  const attrVal = useRef(null)
+  const attrKey = useRef(null)
   const navigate = useNavigate();
 
   const handleSubmit = (event) => {
@@ -40,9 +49,9 @@ const CreateProductPageComponent = ({
       attributesTable: attributesTable,
     };
     if (event.currentTarget.checkValidity() === true) {
-      if (images.length > 3){
-        setIsCreating("to many files")
-        return
+      if (images.length > 3) {
+        setIsCreating("to many files");
+        return;
       }
       createProductApiRequest(formInputs)
         .then((data) => {
@@ -67,15 +76,6 @@ const CreateProductPageComponent = ({
             navigate("/admin/products");
           }
         })
-        // .then((data) => {
-        //   setIsCreating("Product is being created...");
-        //   setTimeout(() => {
-        //     setIsCreating("")
-        //     if (data.message === "product created successfully") {
-        //     navigate("/admin/products");
-        //   }
-        //   })
-        // })
         .catch((er) => {
           setCreateProductResponseState(
             er.response.data.message
@@ -84,12 +84,29 @@ const CreateProductPageComponent = ({
           );
         });
     }
-
     setValidated(true);
   };
 
   const uploadHandler = (images) => {
     setImages(images);
+  };
+
+  const newCategoryHandler = (e) => {
+    if (e.keyCode && e.keyCode === 13 && e.target.value) {
+      reduxDispatch(newCategory(e.target.value));
+      setTimeout(() => {
+        let element = document.getElementById("cats");
+        setCategoryChoosen(e.target.value);
+        element.value = e.target.value;
+        e.target.value = "";
+      }, 200);
+    }
+  };
+
+  const deleteCategoryHnadler = () => {
+    let element = document.getElementById("cats");
+    reduxDispatch(deleteCategory(element.value));
+    setCategoryChoosen("Choose category");
   };
 
   return (
@@ -131,17 +148,29 @@ const CreateProductPageComponent = ({
             <Form.Group className="mb-3" controlId="formBasicCategory">
               <Form.Label>
                 Category
-                <CloseButton />(<small>remove selected</small>)
+                <CloseButton onClick={deleteCategoryHnadler} />(
+                <small>remove selected</small>)
               </Form.Label>
               <Form.Select
                 required
                 name="category"
                 aria-label="Default select example"
+                id="cats"
+                onChange={(e) =>
+                  changeCategory(
+                    e,
+                    categories,
+                    setAttributesFormDB,
+                    setCategoryChoosen
+                  )
+                }
               >
                 <option value="">Choose category</option>
-                <option value="1">Laptops</option>
-                <option value="2">TV</option>
-                <option value="3">Games</option>
+                {categories.map((item, idx) => (
+                  <option key={idx} value={item.name}>
+                    {item.name}
+                  </option>
+                ))}
               </Form.Select>
             </Form.Group>
 
@@ -149,57 +178,74 @@ const CreateProductPageComponent = ({
               <Form.Label>
                 Or create a new category (e.g. Computers/Laptops/Intel){" "}
               </Form.Label>
-              <Form.Control name="newCategory" type="text" />
+              <Form.Control
+                name="newCategory"
+                type="text"
+                onKeyUp={newCategoryHandler}
+              />
             </Form.Group>
 
-            <Row className="mt-5">
-              <Col md={6}>
-                <Form.Group className="mb-3" controlId="formBasicAttributes">
-                  <Form.Label>Choose atrribute and set value</Form.Label>
-                  <Form.Select
-                    name="atrrKey"
-                    aria-label="Default select example"
+            {attributesFormDB.length > 0 && (
+              <Row className="mt-5">
+                <Col md={6}>
+                  <Form.Group className="mb-3" controlId="formBasicAttributes">
+                    <Form.Label>Choose atrribute and set value</Form.Label>
+                    <Form.Select
+                      name="atrrKey"
+                      aria-label="Default select example"
+                      ref={attrKey}
+                      onChange={(e) => setValueForAttrFormDBselectForm(e,attrVal,attributesFormDB)}
+                    >
+                      <option>Choose attribute</option>
+                      {attributesFormDB.map((item, idx) => (
+                        <Fragment key={idx}>
+                          <option value={item.key}>{item.key}</option>
+                        </Fragment>
+                      ))}
+                    </Form.Select>
+                  </Form.Group>
+                </Col>
+                <Col md={6}>
+                  <Form.Group
+                    className="mb-3"
+                    controlId="formBasicAttributeValue"
                   >
-                    <option>Choose attribute</option>
-                    <option value="red">color</option>
-                  </Form.Select>
-                </Form.Group>
-              </Col>
-              <Col md={6}>
-                <Form.Group
-                  className="mb-3"
-                  controlId="formBasicAttributeValue"
-                >
-                  <Form.Label>Attribute value</Form.Label>
-                  <Form.Select
-                    name="atrrVal"
-                    aria-label="Default select example"
-                  >
-                    <option>Choose attribute value</option>
-                  </Form.Select>
-                </Form.Group>
-              </Col>
-            </Row>
+                    <Form.Label>Attribute value</Form.Label>
+                    <Form.Select
+                      name="atrrVal"
+                      aria-label="Default select example"
+                      ref={attrVal}
+                    >
+                      <option>Choose attribute value</option>
+                    </Form.Select>
+                  </Form.Group>
+                </Col>
+              </Row>
+            )}
 
             <Row>
-              <Table hover>
-                <thead>
-                  <tr>
-                    <th>Attribute</th>
-                    <th>Value</th>
-                    <th>Delete</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>attr key</td>
-                    <td>attr value</td>
-                    <td>
-                      <CloseButton />
-                    </td>
-                  </tr>
-                </tbody>
-              </Table>
+              {attributesTable.length > 0 && (
+                <Table hover>
+                  <thead>
+                    <tr>
+                      <th>Attribute</th>
+                      <th>Value</th>
+                      <th>Delete</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {attributesTable.map((item, idx) => (
+                      <tr key={idx}>
+                        <td>{item.key}</td>
+                        <td>{item.value}</td>
+                        <td>
+                          <CloseButton />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              )}
             </Row>
 
             <Row>
@@ -207,7 +253,7 @@ const CreateProductPageComponent = ({
                 <Form.Group className="mb-3" controlId="formBasicNewAttribute">
                   <Form.Label>Create new attribute</Form.Label>
                   <Form.Control
-                    disabled={false}
+                    disabled={["","Choose category"].includes(categoryChoosen)}
                     placeholder="first choose or create category"
                     name="newAttrValue"
                     type="text"
@@ -221,7 +267,7 @@ const CreateProductPageComponent = ({
                 >
                   <Form.Label>Attribute value</Form.Label>
                   <Form.Control
-                    disabled={false}
+                    disabled={["","Choose category"].includes(categoryChoosen)}
                     placeholder="first choose or create category"
                     required={true}
                     name="newAttrValue"

@@ -8,7 +8,6 @@ import { logout } from "../../../redux/actions/userAction";
 
 const ProductPageComponent = ({ fetchProducts, deleteProduct }) => {
   const dispatch = useDispatch();
-
   const [products, setProducts] = useState([]);
   const [productDeleted, setProductDeleted] = useState(false);
 
@@ -16,7 +15,7 @@ const ProductPageComponent = ({ fetchProducts, deleteProduct }) => {
     if (window.confirm("Are you sure?")) {
       const data = await deleteProduct(productId);
       if (data.message === "product removed successfully") {
-        setProductDeleted(true);
+        setProductDeleted(!productDeleted);
       }
     }
   };
@@ -24,17 +23,11 @@ const ProductPageComponent = ({ fetchProducts, deleteProduct }) => {
   useEffect(() => {
     const abctrl = new AbortController();
     fetchProducts(abctrl)
-      .then((res) => setProducts(res))
-      .catch(
-        (err) => dispatch(logout())
-        // setProducts([
-        //   {
-        //     name: err.response.data.message
-        //       ? err.response.data.message
-        //       : err.response.data,
-        //   },
-        // ])
-      );
+      .then((res) => {
+        console.log(res);
+        setProducts(res);
+      })
+      .catch((err) => dispatch(logout()));
 
     return () => abctrl.abort();
   }, [productDeleted]);
