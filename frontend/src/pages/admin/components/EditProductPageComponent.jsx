@@ -12,7 +12,11 @@ import {
 } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Fragment, useEffect, useRef, useState } from "react";
-import { changeCategory, setValueForAttrFormDBselectForm } from "./utils/utlis";
+import {
+  changeCategory,
+  setAttributesTableWrapper,
+  setValueForAttrFormDBselectForm,
+} from "./utils/utlis";
 
 const onHover = {
   cursor: "pointer",
@@ -29,6 +33,7 @@ const EditProductPageComponent = ({
   saveAttributeToCatDoc,
   reduxDisptach,
   imageDeleteHandler,
+  uploadHandler,
   uploadImagesApiRequest,
   uploadImagesCloudinaryApiRequest,
 }) => {
@@ -88,7 +93,6 @@ const EditProductPageComponent = ({
           })
         );
     }
-
     setValidated(true);
   };
 
@@ -119,31 +123,12 @@ const EditProductPageComponent = ({
     if (e.target.value !== "Choose attribute value") {
       //   console.log(attrKey.current.value);
       //   console.log(e.target.value);
-      setAttributesTableWrapper(attrKey.current.value, e.target.value);
+      setAttributesTableWrapper(
+        attrKey.current.value,
+        e.target.value,
+        setAttributesTable
+      );
     }
-  };
-
-  const setAttributesTableWrapper = (key, val) => {
-    setAttributesTable((attr) => {
-      // console.log(attr)
-      if (attr.length !== 0) {
-        var keyExistsInOldTable = false;
-        let modifiedTable = attr.map((item) => {
-          if (item.key === key) {
-            keyExistsInOldTable = true;
-            item.value = val;
-            return item;
-          } else {
-            return item;
-          }
-        });
-        if (keyExistsInOldTable) {
-          return [...modifiedTable];
-        } else return [...modifiedTable, { key: key, value: val }];
-      } else {
-        return [{ key: key, value: val }];
-      }
-    });
   };
 
   const deleteAttribute = (key) => {
@@ -164,7 +149,6 @@ const EditProductPageComponent = ({
 
   const newAttrValueHandler = (e) => {
     e.preventDefault();
-    // key code 13 means enter
     setNewAttrValue(e.target.value);
     addNewAttributeManually(e);
   };
@@ -175,7 +159,7 @@ const EditProductPageComponent = ({
         reduxDisptach(
           saveAttributeToCatDoc(newAttrKey, newAttrValue, categoryChoosen)
         );
-        setAttributesTableWrapper(newAttrKey, newAttrValue);
+        setAttributesTableWrapper(newAttrKey, newAttrValue, setAttributesTable);
         e.target.value = "";
         createNewAttrKey.current.value = "";
         createNewAttrVal.current.value = "";
@@ -351,13 +335,13 @@ const EditProductPageComponent = ({
                 <Form.Group className="mb-3" controlId="formBasicNewAttribute">
                   <Form.Label>Create new attribute</Form.Label>
                   <Form.Control
+                    ref={createNewAttrKey}
                     disabled={categoryChoosen === "Choose category"}
                     placeholder="first choose or create category"
                     name="newAttrKey"
                     type="text"
                     onKeyUp={newAttrKeyHandler}
                     required={newAttrValue}
-                    ref={createNewAttrKey}
                   />
                 </Form.Group>
               </Col>
@@ -368,13 +352,13 @@ const EditProductPageComponent = ({
                 >
                   <Form.Label>Attribute value</Form.Label>
                   <Form.Control
+                    ref={createNewAttrVal}
                     disabled={categoryChoosen === "Choose category"}
                     placeholder="first choose or create category"
                     required={newAttrKey}
                     name="newAttrValue"
                     type="text"
                     onKeyUp={newAttrValueHandler}
-                    ref={createNewAttrVal}
                   />
                 </Form.Group>
               </Col>

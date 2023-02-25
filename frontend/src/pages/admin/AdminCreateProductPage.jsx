@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   deleteCategory,
   newCategory,
+  saveAttributeToCatDoc,
 } from "../../redux/actions/categoryActions";
 
 const createProductApiRequest = async (formInputs) => {
@@ -17,17 +18,18 @@ const createProductApiRequest = async (formInputs) => {
 
 const AdminCreateProductPage = () => {
   const { categories } = useSelector((state) => state.getCategories);
-  const reduxDispatch = useDispatch();
+  const dispatch = useDispatch();
 
   return (
     <CreateProductPageComponent
       createProductApiRequest={createProductApiRequest}
       uploadImagesApiRequest={uploadImagesApiRequest}
       uploadImagesCloudinaryApiRequest={uploadImagesCloudinaryApiRequest}
-      reduxDispatch={reduxDispatch}
+      reduxDispatch={dispatch}
       newCategory={newCategory}
       categories={categories}
       deleteCategory={deleteCategory}
+      saveAttributeToCatDoc={saveAttributeToCatDoc}
     />
   );
 };
