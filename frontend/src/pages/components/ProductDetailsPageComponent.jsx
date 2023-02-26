@@ -19,9 +19,13 @@ import { useParams } from "react-router-dom";
 const ProductDetailsPageComponent = ({
   addToCartReduxAction,
   reduxDispatch,
+  getProductsDetails
 }) => {
   const [quantity, setQuantity] = useState(1);
   const [showCartMessage, setShowCartMessage] = useState(false);
+  const [product,setProduct] = useState([])  
+  const [loading,setLoading] = useState(true)
+
   const { id } = useParams();
   // console.log(id);
 

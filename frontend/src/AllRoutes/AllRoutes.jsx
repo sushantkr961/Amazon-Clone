@@ -53,7 +53,7 @@ function AllRoutes() {
       {/* admin protected routes */}
       <Route element={<ProtectedRoute admin={true} />}>
         <Route path="/admin/users" element={<AdminUsersPage />} />
-        <Route path="/admin/edit-user" element={<AdminEditUserPage />} />
+        <Route path="/admin/edit-user/:id" element={<AdminEditUserPage />} />
         <Route path="/admin/products" element={<AdminProductPage />} />
         <Route
           path="/admin/create-new-product"
