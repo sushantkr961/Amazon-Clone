@@ -35,6 +35,10 @@ function AllRoutes() {
         {/* publically available routes */}
         <Route path="/" element={<HomePage />} />
         <Route path="/product-list" element={<ProductListPage />} />
+        <Route
+          path="/product-list/category/:categoryName"
+          element={<ProductListPage />}
+        />
         <Route path="/product-details/:id" element={<ProductDetailsPage />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/login" element={<LoginPage />} />
@@ -59,7 +63,10 @@ function AllRoutes() {
           path="/admin/create-new-product"
           element={<AdminCreateProductPage />}
         />
-        <Route path="/admin/edit-product/:id" element={<AdminEditProductPage />} />
+        <Route
+          path="/admin/edit-product/:id"
+          element={<AdminEditProductPage />}
+        />
         <Route path="/admin/orders" element={<AdminOrderPage />} />
         <Route
           path="/admin/order-details/:id"
