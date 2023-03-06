@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   Navbar,
   Nav,
@@ -21,6 +21,9 @@ function HeaderComponent() {
   const dispatch = useDispatch();
   const { userInfo } = useSelector((state) => state.userRegisterLogin);
   const itemsCount = useSelector((state) => state.cart.itemsCount);
+  const {categories} = useSelector((state) => state.getCategories)
+
+  const [searchCategoryToggle, setSearchCategoryToggle] = useState("All")
 
   useEffect(() => {
     dispatch(getCategories())
@@ -36,10 +39,11 @@ function HeaderComponent() {
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="me-auto">
             <InputGroup>
-              <DropdownButton id="dropdown-basic-button" title="All Categories">
-                <Dropdown.Item>Electronics</Dropdown.Item>
-                <Dropdown.Item>Books</Dropdown.Item>
-                <Dropdown.Item>Beauty</Dropdown.Item>
+              <DropdownButton id="dropdown-basic-button" title={searchCategoryToggle}>
+              <Dropdown.Item onClick={() => setSearchCategoryToggle("All")}>All</Dropdown.Item>
+                {categories.map((category, idx) => (
+                  <Dropdown.Item key={idx} onClick={() => setSearchCategoryToggle(category.name)}>{category.name}</Dropdown.Item>
+                ))}
               </DropdownButton>
               <Form.Control type="text" placeholder="Search Amazon.in" />
               <Button variant="warning">
