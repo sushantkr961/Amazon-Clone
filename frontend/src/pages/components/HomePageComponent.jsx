@@ -3,21 +3,29 @@ import { Container, Row } from "react-bootstrap";
 import CategoryCard from "../../components/CategoryCard";
 import ProductCarousel from "../../components/ProductCarousel";
 
-const HomePageComponent = ({ categories }) => {
-  const [mainCagegories, setMainCagegories] = useState([]);
+const HomePageComponent = ({ categories, getBestSellers }) => {
+  const [mainCategories, setMainCategories] = useState([]);
+  const [bestsellers, setBestsellers] = useState([]);
 
   useEffect(() => {
-    setMainCagegories((cat) =>
+    getBestSellers()
+      .then((data) => {
+        setBestsellers(data);
+      })
+      .catch((er) =>
+      console.log(er.response.data.message ? er.response.data.message : er.response.data)
+      );
+    setMainCategories((cat) =>
       categories.filter((item) => !item.name.includes("/"))
     );
-  }, [categories]);
+  }, [categories, getBestSellers]);
 
   return (
     <>
-      <ProductCarousel />
+      <ProductCarousel bestsellers={bestsellers} />
       <Container>
         <Row xs={1} md={2} className="g-4 mt-5">
-          {mainCagegories.map((category, idx) => (
+          {mainCategories.map((category, idx) => (
             <CategoryCard key={idx} category={category} idx={idx} />
           ))}
         </Row>
