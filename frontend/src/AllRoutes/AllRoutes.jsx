@@ -35,13 +35,13 @@ function AllRoutes() {
         {/* publically available routes */}
         <Route path="/" element={<HomePage />} />
         <Route path="/product-list" element={<ProductListPage />} />
-        <Route path="/product-list/:pageNum" element={<ProductListPage />} />
+        <Route path="/product-list/:pageNumParam" element={<ProductListPage />} />
         <Route
           path="/product-list/category/:categoryName"
           element={<ProductListPage />}
         />
         <Route
-          path="/product-list/category/:categoryName/:pageNum"
+          path="/product-list/category/:categoryName/:pageNumParam"
           element={<ProductListPage />}
         />
         <Route
@@ -49,7 +49,7 @@ function AllRoutes() {
           element={<ProductListPage />}
         />
         <Route
-          path="/product-list/category/:searchQuery/:pageNum"
+          path="/product-list/category/:searchQuery/:pageNumParam"
           element={<ProductListPage />}
         />
         <Route
@@ -57,7 +57,7 @@ function AllRoutes() {
           element={<ProductListPage />}
         />
         <Route
-          path="/product-list/category/:categoryName/search/:searchQuery/:pageNum"
+          path="/product-list/category/:categoryName/search/:searchQuery/:pageNumParam"
           element={<ProductListPage />}
         />
         <Route path="/product-details/:id" element={<ProductDetailsPage />} />
