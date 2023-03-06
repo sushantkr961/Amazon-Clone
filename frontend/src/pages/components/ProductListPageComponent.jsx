@@ -8,7 +8,7 @@ import RatingFilterComponent from "../../components/filterQueryResultOptions/Rat
 import CategoryFilterComponent from "../../components/filterQueryResultOptions/CategoryFilterComponent";
 import AttributesFilterComponent from "../../components/filterQueryResultOptions/AttributesFilterComponent";
 import { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 const ProductListPageComponent = ({ getProducts, categories }) => {
   const [products, setProducts] = useState([]);
@@ -21,9 +21,15 @@ const ProductListPageComponent = ({ getProducts, categories }) => {
   const [price, setPrice] = useState(500); // filter by price
   const [ratingsFromFilter, setRatingsFromFilter] = useState({}); // filter by rating
   const [categoriesFromFilter, setCategoriesFromFilter] = useState({}); // filter by category
+  const [sortOption, setSortOption] = useState(""); // sorting functionality
+  const [paginationLinksNumber, setPaginationLinksNumber] = useState(null);
+  const [pageNum, setPageNum] = useState(null);
 
   const { categoryName } = useParams() || "";
+  const { pageNumParam } = useParams() || 1;
+  const { searchQuery } = useParams() || "";
   const location = useLocation();
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (categoryName) {
@@ -42,20 +48,23 @@ const ProductListPageComponent = ({ getProducts, categories }) => {
   }, [categoryName, categories]);
 
   useEffect(() => {
-    getProducts()
+    getProducts(filters, sortOption, categoryName, pageNumParam, searchQuery)
       .then((res) => {
         // console.log(res);
         setProducts(res.products);
+        setPaginationLinksNumber(res.paginationLinksNumber);
+        setPageNum(res.pageNum);
         setLoading(false);
       })
       .catch((er) => {
         console.log(er);
         setError(true);
       });
-    console.log(filters);
-  }, [filters]);
+    // console.log(filters);
+  }, [filters, sortOption, categoryName, pageNumParam, searchQuery]);
 
   const handleFilters = () => {
+    navigate(location.pathname.replace(/\/[0-9]+$/, ""))
     setShowResetFiltersButton(true);
     setFilters({
       attrs: attrsFromFilter,
@@ -97,7 +106,7 @@ const ProductListPageComponent = ({ getProducts, categories }) => {
         <Col md={3}>
           <ListGroup variant="flush">
             <ListGroup.Item className="mb-3 mt-3">
-              <SortOptionsComponent />
+              <SortOptionsComponent setSortOption={setSortOption} />
             </ListGroup.Item>
             <ListGroup.Item>
               FILTER: <br />
@@ -153,7 +162,15 @@ const ProductListPageComponent = ({ getProducts, categories }) => {
               />
             ))
           )}
-          <PaginationComponent />
+
+          {paginationLinksNumber > 1 ? (
+            <PaginationComponent
+              categoryName={categoryName}
+              searchQuery={searchQuery}
+              paginationLinksNumber={paginationLinksNumber}
+              pageNum={pageNum}
+            />
+          ) : null}
         </Col>
       </Row>
     </Container>
