@@ -8,7 +8,7 @@ import RatingFilterComponent from "../../components/filterQueryResultOptions/Rat
 import CategoryFilterComponent from "../../components/filterQueryResultOptions/CategoryFilterComponent";
 import AttributesFilterComponent from "../../components/filterQueryResultOptions/AttributesFilterComponent";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 
 const ProductListPageComponent = ({ getProducts, categories }) => {
   const [products, setProducts] = useState([]);
@@ -23,6 +23,7 @@ const ProductListPageComponent = ({ getProducts, categories }) => {
   const [categoriesFromFilter, setCategoriesFromFilter] = useState({}); // filter by category
 
   const { categoryName } = useParams() || "";
+  const location = useLocation()
 
   useEffect(() => {
     if (categoryName) {
@@ -70,6 +71,26 @@ const ProductListPageComponent = ({ getProducts, categories }) => {
     window.location.href = "/product-list";
   };
 
+  useEffect(() => {
+    // console.log(categoriesFromFilter)
+    if (Object.entries(categoriesFromFilter).length > 0) {
+      setAttrsFilter([])
+      var cat = []
+      var count;
+      Object.entries(categoriesFromFilter).forEach(([category, checked]) => {
+        if (checked) {
+          var name = category.split("/")[0]
+          cat.push(name)
+          count = cat.filter((x) =>  x === name).length;
+          if (count === 1) {
+            var index = categories.findIndex((item) => item.name === name)
+            setAttrsFilter((attrs) => [...attrs, ...categories[index].attrs])
+          }
+        }
+      })
+    }
+  },[categoriesFromFilter, categories])
+
   return (
     <Container fluid>
       <Row>
@@ -87,6 +108,7 @@ const ProductListPageComponent = ({ getProducts, categories }) => {
                 setRatingsFromFilter={setRatingsFromFilter}
               />
             </ListGroup.Item>
+            
             <ListGroup.Item>
               <CategoryFilterComponent
                 setCategoriesFromFilter={setCategoriesFromFilter}
