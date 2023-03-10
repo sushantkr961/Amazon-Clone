@@ -1,4 +1,8 @@
-import { SET_CHATROOMS, SET_SOCKET } from "../actionTypes/actionTypes";
+import {
+  MESSAGE_RECEIVED,
+  SET_CHATROOMS,
+  SET_SOCKET,
+} from "../actionTypes/actionTypes";
 
 export const setChatRooms = (user, message) => async (dispatch) => {
   dispatch({
@@ -15,6 +19,16 @@ export const setSocket = (socket) => async (dispatch) => {
     type: SET_SOCKET,
     payload: {
       socket: socket,
+    },
+  });
+};
+
+// notification dot for admin only
+export const setMessageReceived = (value) => async (dispatch) => {
+  dispatch({
+    type: MESSAGE_RECEIVED,
+    payload: {
+      value: value,
     },
   });
 };

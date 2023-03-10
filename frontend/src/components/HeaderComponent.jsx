@@ -16,14 +16,19 @@ import { LinkContainer } from "react-router-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { getCategories } from "../redux/actions/categoryActions";
 import { logout } from "../redux/actions/userAction";
-import socketIOClient from "socket.io-client"
-import { setChatRooms, setSocket } from "../redux/actions/chatActions";
+import socketIOClient from "socket.io-client";
+import {
+  setChatRooms,
+  setMessageReceived,
+  setSocket,
+} from "../redux/actions/chatActions";
 
 function HeaderComponent() {
   const dispatch = useDispatch();
   const { userInfo } = useSelector((state) => state.userRegisterLogin);
   const itemsCount = useSelector((state) => state.cart.itemsCount);
   const { categories } = useSelector((state) => state.getCategories);
+  const { messageReceived } = useSelector((state) => state.adminChat);
 
   const [searchCategoryToggle, setSearchCategoryToggle] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
@@ -42,7 +47,10 @@ function HeaderComponent() {
         navigate(`/product-list/search/${searchQuery}`);
       } else {
         navigate(
-          `/product-list/category/${searchCategoryToggle.replaceAll("/",",")}/search/${searchQuery}`
+          `/product-list/category/${searchCategoryToggle.replaceAll(
+            "/",
+            ","
+          )}/search/${searchQuery}`
         );
       }
     } else if (searchCategoryToggle !== "All") {
@@ -56,17 +64,15 @@ function HeaderComponent() {
 
   useEffect(() => {
     if (userInfo.isAdmin) {
-      const socket = socketIOClient()
-      socket.on("server sends message from client to admin", ({message}) => {
-        dispatch(setSocket(socket))
+      const socket = socketIOClient();
+      socket.on("server sends message from client to admin", ({ message }) => {
+        dispatch(setSocket(socket));
         // console.log(message)
-        // let chatRooms = {
-        //   sadfsldfSocketID: [{"client": "dsfdf"},{"client": "dsfdf"},{"admin": "dsfdf"}]
-        // }
-        dispatch(setChatRooms("exampleUser",message))
-      })
+        dispatch(setChatRooms("exampleUser", message));
+        dispatch(setMessageReceived(true));
+      });
     }
-  },[dispatch, userInfo.isAdmin])
+  }, [dispatch, userInfo.isAdmin]);
 
   return (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
@@ -111,7 +117,9 @@ function HeaderComponent() {
               <LinkContainer to={"/admin/orders"}>
                 <Nav.Link>
                   Admin
-                  <span className="position-absolute top-1 start-10 translate-middle p-2 bg-danger border-light rounded-circle"></span>
+                  {messageReceived && (
+                    <span className="position-absolute top-1 start-10 translate-middle p-2 bg-danger border-light rounded-circle"></span>
+                  )}
                 </Nav.Link>
               </LinkContainer>
             ) : userInfo.name && !userInfo.isAdmin ? (
