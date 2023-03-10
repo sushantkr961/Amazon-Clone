@@ -15,7 +15,7 @@ const AdminChatPage = () => {
       <Col md={10}>
         <Row>
           {Object.entries(chatRooms).map((chatRoom, index) => (
-          <AdminChatRoomComponent key={index} chatRoom={chatRoom} />
+          <AdminChatRoomComponent key={index} chatRoom={chatRoom} roomIndex={index+1} socketUser={chatRoom[0]} />
           ))}
         </Row>
       </Col>
