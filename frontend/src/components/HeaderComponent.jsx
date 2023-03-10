@@ -17,7 +17,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { getCategories } from "../redux/actions/categoryActions";
 import { logout } from "../redux/actions/userAction";
 import socketIOClient from "socket.io-client"
-import { setChatRooms } from "../redux/actions/chatActions";
+import { setChatRooms, setSocket } from "../redux/actions/chatActions";
 
 function HeaderComponent() {
   const dispatch = useDispatch();
@@ -58,6 +58,7 @@ function HeaderComponent() {
     if (userInfo.isAdmin) {
       const socket = socketIOClient()
       socket.on("server sends message from client to admin", ({message}) => {
+        dispatch(setSocket(socket))
         // console.log(message)
         // let chatRooms = {
         //   sadfsldfSocketID: [{"client": "dsfdf"},{"client": "dsfdf"},{"admin": "dsfdf"}]
@@ -65,7 +66,7 @@ function HeaderComponent() {
         dispatch(setChatRooms("exampleUser",message))
       })
     }
-  },[userInfo.isAdmin])
+  },[dispatch, userInfo.isAdmin])
 
   return (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">

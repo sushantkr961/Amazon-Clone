@@ -1,4 +1,4 @@
-import { SET_CHATROOMS } from "../actionTypes/actionTypes";
+import { SET_CHATROOMS, SET_SOCKET } from "../actionTypes/actionTypes";
 
 export const setChatRooms = (user, message) => async (dispatch) => {
   dispatch({
@@ -6,6 +6,15 @@ export const setChatRooms = (user, message) => async (dispatch) => {
     payload: {
       user: user,
       message: message,
+    },
+  });
+};
+
+export const setSocket = (socket) => async (dispatch) => {
+  dispatch({
+    type: SET_SOCKET,
+    payload: {
+      socket: socket,
     },
   });
 };

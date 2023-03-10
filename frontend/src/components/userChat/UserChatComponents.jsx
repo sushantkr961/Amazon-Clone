@@ -19,6 +19,13 @@ const UserChatComponents = () => {
     if (!userInfo.isAdmin) {
       const socket = socketIOClient();
       setSocket(socket);
+      socket.on("server sends message from admin to client", (msg) => {
+        setChat((chat) => {
+          return [...chat, { admin: msg }];
+        });
+        const chatMessages = document.querySelector(".cht-msg");
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      });
       return () => socket.disconnect(); // disconnect when close the page
     }
   }, [userInfo.isAdmin]);
@@ -39,8 +46,8 @@ const UserChatComponents = () => {
     msg.focus();
     setTimeout(() => {
       msg.value = "";
-      const chatMessages = document.querySelector(".cht-msg")
-      chatMessages.scrollTop=chatMessages.scrollHeight
+      const chatMessages = document.querySelector(".cht-msg");
+      chatMessages.scrollTop = chatMessages.scrollHeight;
     }, 200);
   };
 
