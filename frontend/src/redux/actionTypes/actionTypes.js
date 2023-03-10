@@ -13,3 +13,6 @@ export const DELETE_CATEGORTY = "DELETE_CATEGORTY";
 
 // attributes actions
 export const SAVE_ATTRIBUTES = "SAVE_ATTRIBUTES";
+
+// chat acitons
+export const SET_CHATROOMS = "SET_CHATROOMS";

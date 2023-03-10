@@ -17,6 +17,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { getCategories } from "../redux/actions/categoryActions";
 import { logout } from "../redux/actions/userAction";
 import socketIOClient from "socket.io-client"
+import { setChatRooms } from "../redux/actions/chatActions";
 
 function HeaderComponent() {
   const dispatch = useDispatch();
@@ -57,7 +58,11 @@ function HeaderComponent() {
     if (userInfo.isAdmin) {
       const socket = socketIOClient()
       socket.on("server sends message from client to admin", ({message}) => {
-        console.log(message)
+        // console.log(message)
+        // let chatRooms = {
+        //   sadfsldfSocketID: [{"client": "dsfdf"},{"client": "dsfdf"},{"admin": "dsfdf"}]
+        // }
+        dispatch(setChatRooms("exampleUser",message))
       })
     }
   },[userInfo.isAdmin])
