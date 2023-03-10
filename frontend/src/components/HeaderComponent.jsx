@@ -18,6 +18,7 @@ import { getCategories } from "../redux/actions/categoryActions";
 import { logout } from "../redux/actions/userAction";
 import socketIOClient from "socket.io-client";
 import {
+  removeChatRoom,
   setChatRooms,
   setMessageReceived,
   setSocket,
@@ -70,10 +71,15 @@ function HeaderComponent() {
       socket.on("server sends message from client to admin", ({user, message }) => {
         dispatch(setSocket(socket));
         // console.log(message)
+        // let chatRooms ={adsfasdSocketID: [{"client": "sdfas"},{"client": "sdfas"},{"admin": "sdfas"}]}
         dispatch(setChatRooms(user, message));
         dispatch(setMessageReceived(true));
         audio.play()
       });
+      socket.on("disconnected", ({reason, socketId}) => {
+        // console.log(socketId,reason)
+        dispatch(removeChatRoom(socketId))
+      })
       return () => socket.disconnect() // when leave the page socket will disconnect
     }
   }, [dispatch, userInfo.isAdmin]);

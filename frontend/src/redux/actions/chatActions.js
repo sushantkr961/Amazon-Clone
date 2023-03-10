@@ -1,5 +1,6 @@
 import {
   MESSAGE_RECEIVED,
+  REMOVE_CHATROOM,
   SET_CHATROOMS,
   SET_SOCKET,
 } from "../actionTypes/actionTypes";
@@ -29,6 +30,15 @@ export const setMessageReceived = (value) => async (dispatch) => {
     type: MESSAGE_RECEIVED,
     payload: {
       value: value,
+    },
+  });
+};
+
+export const removeChatRoom = (socketId) => async (dispatch) => {
+  dispatch({
+    type: REMOVE_CHATROOM,
+    payload: {
+      socketId: socketId,
     },
   });
 };

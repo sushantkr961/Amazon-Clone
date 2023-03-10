@@ -1,5 +1,6 @@
 import {
   MESSAGE_RECEIVED,
+  REMOVE_CHATROOM,
   SET_CHATROOMS,
   SET_SOCKET,
 } from "../actionTypes/actionTypes";
@@ -39,6 +40,14 @@ export const adminChatReducer = (state = CHAT_INITIAL_STATE, action) => {
       return {
         ...state,
         messageReceived: action.payload.value,
+      };
+
+    case REMOVE_CHATROOM:
+      let currentState2 = { ...state };
+      delete currentState2.chatRooms[action.payload.socketId];
+      return {
+        ...state,
+        chatRooms: { ...currentState2.chatRooms },
       };
 
     default:
