@@ -1,9 +1,14 @@
+const { createServer } = require("http");
+const { Server } = require("socket.io");
 const express = require("express");
 const fileUpload = require("express-fileupload");
 const cookieParser = require("cookie-parser");
 
 const app = express();
-const PORT = 8080;
+const PORT = process.env.PORT || 8080;
+const httpServer = createServer(app);
+global.io = new Server(httpServer);
+
 const apiRoutes = require("./routes/apiRoutes");
 
 app.use(express.urlencoded({ extended: true }));
@@ -39,6 +44,9 @@ app.use((error, req, res, next) => {
   }
 });
 
-app.listen(PORT, () => {
+// app.listen(PORT, () => {
+//   console.log(`Listening on http://localhost:${PORT}`);
+// });
+httpServer.listen(PORT, () => {
   console.log(`Listening on http://localhost:${PORT}`);
 });
