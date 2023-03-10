@@ -64,13 +64,16 @@ function HeaderComponent() {
 
   useEffect(() => {
     if (userInfo.isAdmin) {
+      var audio = new Audio("/audio/notification.mp3")
       const socket = socketIOClient();
       socket.on("server sends message from client to admin", ({ message }) => {
         dispatch(setSocket(socket));
         // console.log(message)
         dispatch(setChatRooms("exampleUser", message));
         dispatch(setMessageReceived(true));
+        audio.play()
       });
+      return () => socket.disconnect() // when leave the page socket will disconnect
     }
   }, [dispatch, userInfo.isAdmin]);
 

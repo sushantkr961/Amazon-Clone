@@ -7,6 +7,7 @@ import {
 const CHAT_INITIAL_STATE = {
   chatRooms: {},
   socket: false,
+  messageReceived: false,
 };
 
 export const adminChatReducer = (state = CHAT_INITIAL_STATE, action) => {
