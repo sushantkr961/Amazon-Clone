@@ -11,7 +11,10 @@ global.io = new Server(httpServer);
 
 io.on("connection", (socket) => {
   socket.on("client sends message", (msg) => {
-    console.log(msg);
+    // console.log(msg);
+    socket.broadcast.emit("server sends message from client to admin", {
+      message: msg,
+    });
   });
 });
 

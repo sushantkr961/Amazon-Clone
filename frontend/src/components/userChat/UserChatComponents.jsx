@@ -1,24 +1,50 @@
 import React, { useEffect, useState } from "react";
 import "../../chat.css";
-import socketIOClient from "socket.io-client"
+import socketIOClient from "socket.io-client";
+import { useSelector } from "react-redux";
 
 const UserChatComponents = () => {
-  const [socket, setSocket] = useState(false)
+  const [socket, setSocket] = useState(false);
+  const [chat, setChat] = useState([]);
 
-  useEffect(() =>{
-    const socket = socketIOClient()
-    setSocket(socket)
-    return () => socket.disconnect() // disconnect when close the page
-  },[])
+  // let chat = [
+  //   {"client": "msg"},
+  //   {"client": "msg"},
+  //   {"admin": "msg1"},
+  // ]
 
-  const clientSubmitChatMsg = (e) =>{
-    if (e.keyCode && e.keyCode !== 13) {
-      return
+  const userInfo = useSelector((state) => state.userRegisterLogin.userInfo);
+
+  useEffect(() => {
+    if (!userInfo.isAdmin) {
+      const socket = socketIOClient();
+      setSocket(socket);
+      return () => socket.disconnect(); // disconnect when close the page
     }
-    socket.emit("client sends message", "message form client")
-  }
+  }, [userInfo.isAdmin]);
 
-  return (
+  const clientSubmitChatMsg = (e) => {
+    if (e.keyCode && e.keyCode !== 13) {
+      return;
+    }
+    const msg = document.getElementById("clientChatMsg");
+    let v = msg.value.trim();
+    if (v === "" || v === null || v === false || !v) {
+      return;
+    }
+    socket.emit("client sends message", v);
+    setChat((chat) => {
+      return [...chat, { client: v }];
+    });
+    msg.focus();
+    setTimeout(() => {
+      msg.value = "";
+      const chatMessages = document.querySelector(".cht-msg")
+      chatMessages.scrollTop=chatMessages.scrollHeight
+    }, 200);
+  };
+
+  return !userInfo.isAdmin ? (
     <>
       <input type="checkbox" id="check" />
       <label className="chat-btn" htmlFor="check">
@@ -34,24 +60,21 @@ const UserChatComponents = () => {
 
         <div className="chat-form">
           <div className="cht-msg">
-            {/* <p>Chat history</p> */}
-            {/* for checking */}
-            {Array.from({ length: 20 }).map((_, id) => (
+            {chat.map((item, id) => (
               <div key={id}>
-                <p>
-                  <b>You wrote:</b> Hello, world! This is a toast message.
-                </p>
-                <p className="bg-primary p-3 ms-4 text-light rounded-pill">
-                  <b>Support wrote: </b>Hello, world! This is a toast message.
-                </p>
+                {item.client && (
+                  <p>
+                    <b>You wrote:</b> {item.client}
+                  </p>
+                )}
+                {item.admin && (
+                  <p className="bg-primary p-3 ms-4 text-light rounded-pill">
+                    <b>Support wrote: </b>
+                    {item.admin}
+                  </p>
+                )}
               </div>
             ))}
-            {/* <p>
-              <b>You wrote:</b> Hello, world! This is a toast message.
-            </p>
-            <p className="bg-primary p-3 ms-4 text-light rounded-pill">
-              <b>Support wrote: </b>Hello, world! This is a toast message.
-            </p> */}
           </div>
           <textarea
             id="clientChatMsg"
@@ -60,11 +83,16 @@ const UserChatComponents = () => {
             onKeyUp={(e) => clientSubmitChatMsg(e)}
           ></textarea>
 
-          <button className="btn btn-success btn-block" onClick={(e) => clientSubmitChatMsg(e)}>Submit</button>
+          <button
+            className="btn btn-success btn-block"
+            onClick={(e) => clientSubmitChatMsg(e)}
+          >
+            Submit
+          </button>
         </div>
       </div>
     </>
-  );
+  ) : null;
 };
 
 export default UserChatComponents;
