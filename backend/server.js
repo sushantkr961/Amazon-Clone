@@ -9,6 +9,12 @@ const PORT = process.env.PORT || 8080;
 const httpServer = createServer(app);
 global.io = new Server(httpServer);
 
+io.on("connection", (socket) => {
+  socket.on("client sends message", (msg) => {
+    console.log(msg);
+  });
+});
+
 const apiRoutes = require("./routes/apiRoutes");
 
 app.use(express.urlencoded({ extended: true }));
