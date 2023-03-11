@@ -73,7 +73,7 @@ const AnalyticsPageComponent = ({
     }
     socket.on("newOrder", (data) => handler)
     return () => socket.off("newOrder", handler)
-  },[setDataForFirstSet,setDataForSecondSet,firstDateToCompare, secondDateToCompare])
+  },[setDataForFirstSet, setDataForSecondSet, firstDateToCompare, secondDateToCompare, socketIOClient])
 
   useEffect(() => {
     const abctrl = new AbortController();

@@ -1,9 +1,16 @@
 import React from 'react'
+import { Col, Container, Row } from "react-bootstrap"
 
 const FooterComponent = () => {
   return (
     <footer>
-      <h1>Footer Component</h1>
+      <Container fluid>
+        <Row className="mt-5">
+          <Col className="bg-dark text-white text-center py-5">
+            Copyright &copy; Amazon.in
+          </Col>
+        </Row>
+      </Container>
     </footer>
   )
 }

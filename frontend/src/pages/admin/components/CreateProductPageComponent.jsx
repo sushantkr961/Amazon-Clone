@@ -11,7 +11,11 @@ import {
 import { Link } from "react-router-dom";
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { changeCategory, setAttributesTableWrapper, setValueForAttrFormDBselectForm } from "./utils/utlis";
+import {
+  changeCategory,
+  setAttributesTableWrapper,
+  setValueForAttrFormDBselectForm,
+} from "./utils/utlis";
 
 const CreateProductPageComponent = ({
   createProductApiRequest,
@@ -21,7 +25,7 @@ const CreateProductPageComponent = ({
   reduxDispatch,
   newCategory,
   deleteCategory,
-  saveAttributeToCatDoc
+  saveAttributeToCatDoc,
 }) => {
   const [validated, setValidated] = useState(false);
   const [attributesTable, setAttributesTable] = useState([]);
@@ -116,46 +120,50 @@ const CreateProductPageComponent = ({
   };
 
   const attributeValueSelected = (e) => {
-      if (e.target.value !== "Choose attribute value") {
-          setAttributesTableWrapper(attrKey.current.value, e.target.value, setAttributesTable);
-      }
-  }
+    if (e.target.value !== "Choose attribute value") {
+      setAttributesTableWrapper(
+        attrKey.current.value,
+        e.target.value,
+        setAttributesTable
+      );
+    }
+  };
 
   const deleteAttribute = (key) => {
-      setAttributesTable((table) => table.filter((item) => item.key !== key));
-  }
+    setAttributesTable((table) => table.filter((item) => item.key !== key));
+  };
 
   const newAttrKeyHandler = (e) => {
-      e.preventDefault();
-      setNewAttrKey(e.target.value);
-      addNewAttributeManually(e);
-  }
+    e.preventDefault();
+    setNewAttrKey(e.target.value);
+    addNewAttributeManually(e);
+  };
 
   const newAttrValueHandler = (e) => {
-      e.preventDefault();
-      setNewAttrValue(e.target.value);
-      addNewAttributeManually(e);
-
-  }
+    e.preventDefault();
+    setNewAttrValue(e.target.value);
+    addNewAttributeManually(e);
+  };
 
   const addNewAttributeManually = (e) => {
-      if (e.keyCode && e.keyCode === 13) {
-           if (newAttrKey && newAttrValue) {
-              reduxDispatch(saveAttributeToCatDoc(newAttrKey, newAttrValue, categoryChoosen));
-               setAttributesTableWrapper(newAttrKey, newAttrValue, setAttributesTable);
-               e.target.value = "";
-               createNewAttrKey.current.value = "";
-               createNewAttrVal.current.value = "";
-               setNewAttrKey(false);
-               setNewAttrValue(false);
-           }
-
+    if (e.keyCode && e.keyCode === 13) {
+      if (newAttrKey && newAttrValue) {
+        reduxDispatch(
+          saveAttributeToCatDoc(newAttrKey, newAttrValue, categoryChoosen)
+        );
+        setAttributesTableWrapper(newAttrKey, newAttrValue, setAttributesTable);
+        e.target.value = "";
+        createNewAttrKey.current.value = "";
+        createNewAttrVal.current.value = "";
+        setNewAttrKey(false);
+        setNewAttrValue(false);
       }
-  }
+    }
+  };
 
   const checkKeyDown = (e) => {
-      if (e.code === "Enter") e.preventDefault();
-  }
+    if (e.code === "Enter") e.preventDefault();
+  };
 
   return (
     <Container>
@@ -167,7 +175,12 @@ const CreateProductPageComponent = ({
         </Col>
         <Col md={6}>
           <h1>Create a new product</h1>
-          <Form noValidate validated={validated} onSubmit={handleSubmit} onKeyDown={(e) => checkKeyDown(e)} >
+          <Form
+            noValidate
+            validated={validated}
+            onSubmit={handleSubmit}
+            onKeyDown={(e) => checkKeyDown(e)}
+          >
             <Form.Group className="mb-3" controlId="formBasicName">
               <Form.Label>Name</Form.Label>
               <Form.Control name="name" required type="text" />
@@ -242,7 +255,13 @@ const CreateProductPageComponent = ({
                       name="atrrKey"
                       aria-label="Default select example"
                       ref={attrKey}
-                      onChange={(e)=>setValueForAttrFormDBselectForm(e, attrVal, attributesFromDb)}
+                      onChange={(e) =>
+                        setValueForAttrFormDBselectForm(
+                          e,
+                          attrVal,
+                          attributesFromDb
+                        )
+                      }
                     >
                       <option>Choose attribute</option>
                       {attributesFromDb.map((item, idx) => (
@@ -260,7 +279,7 @@ const CreateProductPageComponent = ({
                   >
                     <Form.Label>Attribute value</Form.Label>
                     <Form.Select
-                    onChange={attributeValueSelected}
+                      onChange={attributeValueSelected}
                       name="atrrVal"
                       aria-label="Default select example"
                       ref={attrVal}
@@ -288,7 +307,9 @@ const CreateProductPageComponent = ({
                         <td>{item.key}</td>
                         <td>{item.value}</td>
                         <td>
-                          <CloseButton onClick={() => deleteAttribute(item.key)} />
+                          <CloseButton
+                            onClick={() => deleteAttribute(item.key)}
+                          />
                         </td>
                       </tr>
                     ))}
@@ -302,7 +323,7 @@ const CreateProductPageComponent = ({
                 <Form.Group className="mb-3" controlId="formBasicNewAttribute">
                   <Form.Label>Create new attribute</Form.Label>
                   <Form.Control
-                  ref={createNewAttrKey}
+                    ref={createNewAttrKey}
                     disabled={["", "Choose category"].includes(categoryChoosen)}
                     placeholder="first choose or create category"
                     name="newAttrValue"
@@ -318,7 +339,7 @@ const CreateProductPageComponent = ({
                 >
                   <Form.Label>Attribute value</Form.Label>
                   <Form.Control
-                  ref={createNewAttrVal}
+                    ref={createNewAttrVal}
                     disabled={["", "Choose category"].includes(categoryChoosen)}
                     placeholder="first choose or create category"
                     required={newAttrKey}
@@ -358,4 +379,3 @@ const CreateProductPageComponent = ({
 };
 
 export default CreateProductPageComponent;
-
