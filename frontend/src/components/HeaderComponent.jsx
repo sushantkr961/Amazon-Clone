@@ -65,22 +65,28 @@ function HeaderComponent() {
 
   useEffect(() => {
     if (userInfo.isAdmin) {
-      var audio = new Audio("/audio/notification.mp3")
+      var audio = new Audio("/audio/notification.mp3");
       const socket = socketIOClient();
-      socket.emit("admin connected with server", "Admin" + Math.floor(Math.random()*10000000000))
-      socket.on("server sends message from client to admin", ({user, message }) => {
-        dispatch(setSocket(socket));
-        // console.log(message)
-        // let chatRooms ={adsfasdSocketID: [{"client": "sdfas"},{"client": "sdfas"},{"admin": "sdfas"}]}
-        dispatch(setChatRooms(user, message));
-        dispatch(setMessageReceived(true));
-        audio.play()
-      });
-      socket.on("disconnected", ({reason, socketId}) => {
+      socket.emit(
+        "admin connected with server",
+        "Admin" + Math.floor(Math.random() * 10000000000)
+      );
+      socket.on(
+        "server sends message from client to admin",
+        ({ user, message }) => {
+          dispatch(setSocket(socket));
+          // console.log(message)
+          // let chatRooms ={adsfasdSocketID: [{"client": "sdfas"},{"client": "sdfas"},{"admin": "sdfas"}]}
+          dispatch(setChatRooms(user, message));
+          dispatch(setMessageReceived(true));
+          audio.play();
+        }
+      );
+      socket.on("disconnected", ({ reason, socketId }) => {
         // console.log(socketId,reason)
-        dispatch(removeChatRoom(socketId))
-      })
-      return () => socket.disconnect() // when leave the page socket will disconnect
+        dispatch(removeChatRoom(socketId));
+      });
+      return () => socket.disconnect(); // when leave the page socket will disconnect
     }
   }, [dispatch, userInfo.isAdmin]);
 
@@ -88,7 +94,15 @@ function HeaderComponent() {
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container>
         <LinkContainer to={"/"}>
-          <Navbar.Brand href="/">Sk Store.in</Navbar.Brand>
+          <Navbar.Brand href="/">
+            <img
+              src="https://www.canva.com/design/DAFc7P875Zg/Dto6Tt3Po4lZb8ehy3n8Bg/watch?utm_content=DAFc7P875Zg&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton"
+              width="30"
+              height="30"
+              className="d-inline-block align-top"
+              alt="skmart logo"
+            />
+          </Navbar.Brand>
         </LinkContainer>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
