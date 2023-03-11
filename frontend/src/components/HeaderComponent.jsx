@@ -96,12 +96,12 @@ function HeaderComponent() {
         <LinkContainer to={"/"}>
           <Navbar.Brand href="/">
             <img
-              src="https://www.canva.com/design/DAFc7P875Zg/Dto6Tt3Po4lZb8ehy3n8Bg/watch?utm_content=DAFc7P875Zg&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton"
-              width="30"
-              height="30"
+              src="/images/skmart.png"
+              width="35"
+              height="35"
               className="d-inline-block align-top"
               alt="skmart logo"
-            />
+            /> {" "} Sk Mart
           </Navbar.Brand>
         </LinkContainer>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
