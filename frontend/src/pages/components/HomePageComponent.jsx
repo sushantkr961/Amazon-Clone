@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row } from "react-bootstrap";
 import CategoryCard from "../../components/CategoryCard";
+import MetaComponents from "../../components/MetaComponents";
 import ProductCarousel from "../../components/ProductCarousel";
 
 const HomePageComponent = ({ categories, getBestSellers }) => {
@@ -22,6 +23,7 @@ const HomePageComponent = ({ categories, getBestSellers }) => {
 
   return (
     <>
+    <MetaComponents />
       <ProductCarousel bestsellers={bestsellers} />
       <Container>
         <Row xs={1} md={2} className="g-4 mt-5">

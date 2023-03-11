@@ -16,6 +16,7 @@ import ImageZoom from "js-image-zoom";
 import { useEffect, useRef, useState } from "react";
 
 import { useParams } from "react-router-dom";
+import MetaComponents from "../../components/MetaComponents";
 
 const ProductDetailsPageComponent = ({
   addToCartReduxAction,
@@ -103,6 +104,8 @@ const ProductDetailsPageComponent = ({
   };
 
   return (
+    <>
+    <MetaComponents title={product.name} description={product.description} />
     <Container>
       <AddedToCartMessageComponent
         showCartMessage={showCartMessage}
@@ -255,6 +258,7 @@ const ProductDetailsPageComponent = ({
         )}
       </Row>
     </Container>
+    </>
   );
 };
 
