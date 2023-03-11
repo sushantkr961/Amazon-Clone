@@ -1,3 +1,5 @@
 clientId: Ace7F8jC8vr9dhPe9dY0zOgCEnngDfaJQPdXD-Dv0YXya3QjCpHInagXARvnOi5Z135liWECVgVuIUBk
 
 account: sb-mcu4t25110248@business.example.com
+
+github token: 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
