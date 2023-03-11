@@ -88,7 +88,7 @@ function HeaderComponent() {
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container>
         <LinkContainer to={"/"}>
-          <Navbar.Brand href="/">Amazon.in</Navbar.Brand>
+          <Navbar.Brand href="/">Sk Store.in</Navbar.Brand>
         </LinkContainer>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
