@@ -89,7 +89,7 @@ app.use(fileUpload());
 app.use(cookieParser());
 
 app.get("/", async (req, res) => {
-  res.json({ message: "API running..." });
+  res.json({ title: "Sk Mart", message: "Developed by Sushant Kumar" });
 });
 
 // mongoDB connection
